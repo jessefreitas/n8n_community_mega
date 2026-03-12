@@ -1,13 +1,13 @@
 # n8n-nodes-mega
 
-Community node for [n8n](https://n8n.io) to work with Mega API.
+Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 
-## Features
+## Recursos
 
-- `Mega` regular node for account-scoped Chatwoot-compatible APIs
-- `Mega Client` regular node for public Client APIs
-- `Mega Dashboard App` regular node for generating embedded app assets served by n8n
-- `Mega Platform` regular node for Chatwoot Platform APIs
+- `Mega` node regular para APIs compatíveis com Chatwoot com escopo de conta
+- `Mega Client` node regular para APIs Client públicas
+- `Mega Dashboard App` node regular para gerar recursos de app embutido servido pelo n8n
+- `Mega Platform` node regular para APIs Platform do Chatwoot
 - `Account -> Get` operation
 - `Account -> Update` operation
 - `Agent -> Get Many`, `Create`, `Update`, and `Delete` operations
@@ -33,131 +33,131 @@ Community node for [n8n](https://n8n.io) to work with Mega API.
 - `Mega Dashboard App` credential with `Base App URL`, `Shared Secret`, and `Allowed Mega Origin`
 - `Mega Client API` credential with `Base URL` and `Inbox Identifier`
 - `Mega Platform API` credential with `Base URL` and `Platform API Access Token`
-- Credential connection test using `GET /api/v1/profile`
+- Teste de conexão da credencial usando `GET /api/v1/profile`
 
-## Requirements
+## Requisitos
 
-- Node.js 22+ is required to run the current `@n8n/node-cli` build and lint commands
+- Node.js 22+ é necessário para executar os comandos atuais de `build` e `lint` do `@n8n/node-cli`
 - npm
 
-## Installation
+## Instalação
 
 ```bash
 npm install
 npm run build
 ```
 
-To use it as a local community node during development:
+Para usar como community node local durante o desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-To install the published package into n8n:
+Para instalar o pacote publicado no n8n:
 
 ```bash
 npm install @jessefreitas/n8n-nodes-mega
 ```
 
-## Credentials
+## Credenciais
 
-Create a `Mega API` credential in n8n with:
+Crie uma credencial `Mega API` no n8n com:
 
-- `Base URL`: your Mega or Chatwoot instance URL, for example `https://app.example.com`
-- `API Access Token`: application token sent in the `api_access_token` header
-- `Mega Account ID`: external Chatwoot account identifier used in account-scoped endpoints
+- `Base URL`: URL da sua instância Mega ou Chatwoot, por exemplo `https://app.example.com`
+- `API Access Token`: token da aplicação enviado no header `api_access_token`
+- `Mega Account ID`: identificador externo da conta Chatwoot usado em endpoints com escopo de conta
 
-The credential test calls `GET /api/v1/profile` to validate the token.
+O teste da credencial chama `GET /api/v1/profile` para validar o token.
 
-## Platform API
+## API Platform
 
-Use the `Mega Platform` node with the `Mega Platform API` credential for Platform App endpoints under:
+Use o node `Mega Platform` com a credencial `Mega Platform API` para endpoints de Platform App em:
 
 ```text
 /platform/api/v1/*
 ```
 
-Create a `Mega Platform API` credential in n8n with:
+Crie uma credencial `Mega Platform API` no n8n com:
 
 - `Base URL`: your Mega or Chatwoot instance URL
-- `Platform API Access Token`: platform app token sent in the `api_access_token` header
+- `Platform API Access Token`: token do app platform enviado no header `api_access_token`
 
-The credential test calls:
+O teste da credencial chama:
 
 ```text
 GET /platform/api/v1/accounts
 ```
 
-Supported `Mega Platform` resources:
+Recursos suportados em `Mega Platform`:
 
 - `Account -> Create`, `Get`, `Update`, and `Delete`
 - `Account User -> Get Many`, `Create`, and `Delete`
 - `Agent Bot -> Get Many`, `Create`, `Get`, `Update`, and `Delete`
 - `User -> Create`, `Get`, `Update`, `Delete`, and `Get SSO Link`
 
-Important:
+Importante:
 
-- `Mega` and `Mega Platform` do not share credentials
-- `Mega` is for account-scoped application APIs under `/api/v1/accounts/*`
-- `Mega Platform` is for Platform APIs under `/platform/api/v1/*`
+- `Mega` and `Mega Platform` não compartilham credenciais
+- `Mega` é para APIs de aplicação com escopo de conta em `/api/v1/accounts/*`
+- `Mega Platform` é para APIs Platform em `/platform/api/v1/*`
 
-## Client API
+## API Client
 
-Use the `Mega Client` node with the `Mega Client API` credential for public client endpoints under:
+Use o node `Mega Client` com a credencial `Mega Client API` para endpoints públicos client em:
 
 ```text
 /public/api/v1/*
 ```
 
-Create a `Mega Client API` credential in n8n with:
+Crie uma credencial `Mega Client API` no n8n com:
 
 - `Base URL`: your Mega or Chatwoot instance URL
-- `Inbox Identifier`: public inbox identifier used by Client APIs
+- `Inbox Identifier`: identificador público da caixa de entrada usado pelas APIs Client
 
-Supported `Mega Client` resources:
+Recursos suportados em `Mega Client`:
 
 - `Contact -> Create`, `Get`, and `Update`
 - `Conversation -> Get Many`, `Create`, `Get`, `Resolve`, `Toggle Typing Status`, and `Update Last Seen`
 - `Message -> Get Many`, `Create`, and `Update`
 - `CSAT Survey -> Get`
 
-Important:
+Importante:
 
-- `Mega`, `Mega Platform`, and `Mega Client` do not share credentials
-- `Mega Client` uses public identifiers like `inbox_identifier`, `contact_identifier`, and `conversation_id`
-- `CSAT Survey` uses a public `conversation_uuid` route outside the `/public/api/v1/inboxes/*` pattern
+- `Mega`, `Mega Platform`, and `Mega Client` não compartilham credenciais
+- `Mega Client` usa identificadores públicos como `inbox_identifier`, `contact_identifier`, and `conversation_id`
+- `CSAT Survey` usa uma rota pública `conversation_uuid` fora do padrão `/public/api/v1/inboxes/*`
 
 ## Mega Dashboard App
 
-Use the `Mega Dashboard App` node with the `Mega Dashboard App` credential to generate the assets needed for an app embedded inside the Mega dashboard.
+Use o node `Mega Dashboard App` com a credencial `Mega Dashboard App` para gerar os recursos necessários para um app embutido dentro do dashboard do Mega.
 
-Create a `Mega Dashboard App` credential in n8n with:
+Crie uma credencial `Mega Dashboard App` no n8n com:
 
-- `Base App URL`: public URL that will serve the embedded app
-- `Shared Secret`: secret used by the embedded app when calling back into n8n
-- `Allowed Mega Origin`: expected Mega origin allowed to send `postMessage` context
-- `App Name`: optional default app name for generated config
-- `App Icon URL`: optional icon URL for generated config
+- `Base App URL`: URL pública que servirá o app embutido
+- `Shared Secret`: segredo usado pelo app embutido ao chamar o n8n de volta
+- `Allowed Mega Origin`: origem esperada do Mega permitida para enviar contexto via `postMessage`
+- `App Name`: nome padrão opcional do app para a configuração gerada
+- `App Icon URL`: URL opcional do ícone para a configuração gerada
 
-Supported `Mega Dashboard App` operations:
+Operações suportadas em `Mega Dashboard App`:
 
 - `Generate Config`
 - `Generate Context Bridge`
 - `Generate Embed Page`
 - `Verify Request`
 
-Important:
+Importante:
 
-- `Mega Dashboard App` does not write settings into Mega automatically
-- the app is registered manually in Mega using the generated config output
-- the embedded app is expected to be served by an n8n webhook or another public URL you control
-- dashboard script injection is out of scope for this node
+- `Mega Dashboard App` não grava configurações no Mega automaticamente
+- o app é registrado manualmente no Mega usando a configuração gerada
+- o app embutido deve ser servido por um webhook do n8n ou outra URL pública sob seu controle
+- injeção de script de dashboard está fora do escopo deste node
 
-## Operation
+## Operações
 
 ### Account -> Get
 
-Gets account details from:
+Obtém detalhes da conta em:
 
 ```text
 GET /api/v1/accounts/{accountId}
@@ -165,7 +165,7 @@ GET /api/v1/accounts/{accountId}
 
 ### Account -> Update
 
-Supports updating these fields:
+Suporta atualizar estes campos:
 
 - `Name`
 - `Locale`
@@ -178,7 +178,7 @@ Supports updating these fields:
 - `Company Size`
 - `Timezone`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 PATCH /api/v1/accounts/{accountId}
@@ -186,35 +186,35 @@ PATCH /api/v1/accounts/{accountId}
 
 ## Mega Dashboard App Operations
 
-The `Mega Dashboard App` node helps you prepare a dashboard app served by n8n and manually registered in Mega.
+O node `Mega Dashboard App` ajuda a preparar um app de dashboard servido pelo n8n e registrado manualmente no Mega.
 
-Generated outputs:
+Saídas geradas:
 
 - `Generate Config`: returns app metadata, iframe URL, allowed origin, shared secret, and manual setup steps
 - `Generate Context Bridge`: returns the browser JavaScript that receives Mega context via `postMessage` and forwards actions to an n8n webhook
 - `Generate Embed Page`: returns HTML ready for an `HTTP Response` node or another public endpoint
 - `Verify Request`: validates request origin and shared secret against the credential
 
-Recommended flow:
+Fluxo recomendado:
 
-1. Create a public webhook in n8n that will serve the embedded page.
-2. Use `Generate Embed Page` to produce the HTML returned by that webhook.
-3. Use `Generate Config` to collect the iframe URL and Mega registration values.
-4. Register the app manually in Mega.
-5. Use `Verify Request` in your backend workflow before processing sensitive actions.
+1. Crie um webhook público no n8n que servirá a página embutida.
+2. Use `Generate Embed Page` para produzir o HTML retornado por esse webhook.
+3. Use `Generate Config` para coletar a URL do iframe e os valores de registro no Mega.
+4. Registre o app manualmente no Mega.
+5. Use `Verify Request` no fluxo de backend antes de processar ações sensíveis.
 
 ## Mega Platform Operations
 
 ### Platform Account
 
-Supported operations:
+Operações suportadas:
 
 - `Create`
 - `Get`
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 POST /platform/api/v1/accounts
@@ -223,7 +223,7 @@ PATCH /platform/api/v1/accounts/{accountId}
 DELETE /platform/api/v1/accounts/{accountId}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Locale`
@@ -235,13 +235,13 @@ Supported fields:
 
 ### Platform Account User
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /platform/api/v1/accounts/{accountId}/account_users
@@ -249,7 +249,7 @@ POST /platform/api/v1/accounts/{accountId}/account_users
 DELETE /platform/api/v1/accounts/{accountId}/account_users
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Account ID`
 - `User ID`
@@ -257,7 +257,7 @@ Supported fields:
 
 ### Platform Agent Bot
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -265,7 +265,7 @@ Supported operations:
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /platform/api/v1/agent_bots
@@ -275,7 +275,7 @@ PATCH /platform/api/v1/agent_bots/{id}
 DELETE /platform/api/v1/agent_bots/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Description`
@@ -287,7 +287,7 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Platform User
 
-Supported operations:
+Operações suportadas:
 
 - `Create`
 - `Get`
@@ -295,7 +295,7 @@ Supported operations:
 - `Delete`
 - `Get SSO Link`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 POST /platform/api/v1/users
@@ -305,7 +305,7 @@ DELETE /platform/api/v1/users/{id}
 GET /platform/api/v1/users/{id}/login
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Display Name`
@@ -317,13 +317,13 @@ Supported fields:
 
 ### Client Contact
 
-Supported operations:
+Operações suportadas:
 
 - `Create`
 - `Get`
 - `Update`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 POST /public/api/v1/inboxes/{inboxIdentifier}/contacts
@@ -331,7 +331,7 @@ GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}
 PATCH /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Contact Identifier`
 - `Identifier`
@@ -345,7 +345,7 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Client Conversation
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -354,7 +354,7 @@ Supported operations:
 - `Toggle Typing Status`
 - `Update Last Seen`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations
@@ -365,7 +365,7 @@ POST /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conve
 POST /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations/{conversationId}/update_last_seen
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Contact Identifier`
 - `Conversation ID`
@@ -374,13 +374,13 @@ Supported fields:
 
 ### Client Message
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations/{conversationId}/messages
@@ -388,7 +388,7 @@ POST /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conve
 PATCH /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations/{conversationId}/messages/{messageId}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Contact Identifier`
 - `Conversation ID`
@@ -399,17 +399,17 @@ Supported fields:
 
 ### Client CSAT Survey
 
-Supported operations:
+Operações suportadas:
 
 - `Get`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /survey/responses/{conversationUuid}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Conversation UUID`
 
@@ -429,7 +429,7 @@ This endpoint is only available in Chatwoot Enterprise editions with the audit l
 
 ### Agent Bot
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -437,7 +437,7 @@ Supported operations:
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/agent_bots
@@ -447,7 +447,7 @@ PATCH /api/v1/accounts/{accountId}/agent_bots/{id}
 DELETE /api/v1/accounts/{accountId}/agent_bots/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Description`
@@ -460,14 +460,14 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Agent
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/agents
@@ -476,7 +476,7 @@ PATCH /api/v1/accounts/{accountId}/agents/{id}
 DELETE /api/v1/accounts/{accountId}/agents/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Email`
@@ -486,7 +486,7 @@ Supported fields:
 
 ### Automation Rule
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -494,7 +494,7 @@ Supported operations:
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/automation_rules
@@ -504,7 +504,7 @@ PATCH /api/v1/accounts/{accountId}/automation_rules/{id}
 DELETE /api/v1/accounts/{accountId}/automation_rules/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Description`
@@ -515,17 +515,17 @@ Supported fields:
 
 ### Campaign
 
-Supported operations:
+Operações suportadas:
 
 - `Create`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 POST /api/v1/accounts/{accountId}/campaigns
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Title`
 - `Message`
@@ -539,14 +539,14 @@ This first implementation covers only campaign creation and models `audience` as
 
 ### Canned Response
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/canned_responses
@@ -555,14 +555,14 @@ PATCH /api/v1/accounts/{accountId}/canned_responses/{id}
 DELETE /api/v1/accounts/{accountId}/canned_responses/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Short Code`
 - `Content`
 
 ### Chat Room
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -577,7 +577,7 @@ Supported operations:
 - `Get Messages`
 - `Create Message`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/chat_rooms
@@ -594,7 +594,7 @@ GET /api/v1/accounts/{accountId}/chat_rooms/{chatRoomId}/messages
 POST /api/v1/accounts/{accountId}/chat_rooms/{chatRoomId}/messages
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Chat Room ID`
 - `Name`
@@ -611,7 +611,7 @@ This first implementation uses JSON payloads only. Binary avatar uploads for roo
 
 ### Custom Filter
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -619,7 +619,7 @@ Supported operations:
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/custom_filters
@@ -629,7 +629,7 @@ PATCH /api/v1/accounts/{accountId}/custom_filters/{customFilterId}
 DELETE /api/v1/accounts/{accountId}/custom_filters/{customFilterId}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Filter Type`
 - `Name`
@@ -638,7 +638,7 @@ Supported fields:
 
 ### Contact
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -658,7 +658,7 @@ Supported operations:
 - `Set Labels`
 - `Merge`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/contacts
@@ -678,7 +678,7 @@ DELETE /api/v1/accounts/{accountId}/contacts/{id}/notes/{noteId}
 POST /api/v1/accounts/{accountId}/actions/contact_merge
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Inbox ID`
 - `Name`
@@ -704,13 +704,13 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Portal
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/portals
@@ -718,7 +718,7 @@ POST /api/v1/accounts/{accountId}/portals
 PATCH /api/v1/accounts/{accountId}/portals/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Slug`
@@ -732,17 +732,17 @@ Supported fields:
 
 ### Portal Category
 
-Supported operations:
+Operações suportadas:
 
 - `Create`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 POST /api/v1/accounts/{accountId}/portals/{id}/categories
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Description`
@@ -755,17 +755,17 @@ Supported fields:
 
 ### Portal Article
 
-Supported operations:
+Operações suportadas:
 
 - `Create`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 POST /api/v1/accounts/{accountId}/portals/{id}/articles
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Title`
 - `Slug`
@@ -781,7 +781,7 @@ Supported fields:
 
 ### Custom Attribute
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
@@ -789,7 +789,7 @@ Supported operations:
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/custom_attribute_definitions
@@ -799,7 +799,7 @@ PATCH /api/v1/accounts/{accountId}/custom_attribute_definitions/{id}
 DELETE /api/v1/accounts/{accountId}/custom_attribute_definitions/{id}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Attribute Display Name`
 - `Attribute Display Type`
@@ -813,7 +813,7 @@ Supported fields:
 
 ### Inbox
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Get`
@@ -826,7 +826,7 @@ Supported operations:
 - `Remove Agent`
 - `Update Agents`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/inboxes
@@ -841,7 +841,7 @@ DELETE /api/v1/accounts/{accountId}/inbox_members
 PATCH /api/v1/accounts/{accountId}/inbox_members
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Channel Type`
@@ -866,14 +866,14 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Integration
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/integrations/hooks
@@ -882,7 +882,7 @@ PATCH /api/v1/accounts/{accountId}/integrations/hooks/{hookId}
 DELETE /api/v1/accounts/{accountId}/integrations/hooks/{hookId}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `App ID`
 - `Inbox ID`
@@ -891,13 +891,13 @@ Supported fields:
 
 ### Message
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/conversations/{conversationId}/messages
@@ -905,7 +905,7 @@ POST /api/v1/accounts/{accountId}/conversations/{conversationId}/messages
 DELETE /api/v1/accounts/{accountId}/conversations/{conversationId}/messages/{messageId}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Conversation ID`
 - `After Message ID`
@@ -920,7 +920,7 @@ Supported fields:
 
 ### Scheduled Message
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Get`
@@ -934,7 +934,7 @@ The node supports two scopes:
 - `Account`
 - `Conversation`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/scheduled_messages
@@ -950,7 +950,7 @@ DELETE /api/v1/accounts/{accountId}/conversations/{conversationId}/scheduled_mes
 GET /api/v1/accounts/{accountId}/conversations/{conversationId}/scheduled_messages/count
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Scope`
 - `Scheduled Message ID`
@@ -981,7 +981,7 @@ GET /api/v1/profile
 
 ### Team
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Get`
@@ -993,7 +993,7 @@ Supported operations:
 - `Remove Agent`
 - `Update Agents`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/teams
@@ -1007,7 +1007,7 @@ DELETE /api/v1/accounts/{accountId}/teams/{teamId}/team_members
 PATCH /api/v1/accounts/{accountId}/teams/{teamId}/team_members
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `Description`
@@ -1016,14 +1016,14 @@ Supported fields:
 
 ### Webhook
 
-Supported operations:
+Operações suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/webhooks
@@ -1032,7 +1032,7 @@ PATCH /api/v1/accounts/{accountId}/webhooks/{webhookId}
 DELETE /api/v1/accounts/{accountId}/webhooks/{webhookId}
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Name`
 - `URL`
@@ -1040,7 +1040,7 @@ Supported fields:
 
 ### Conversation
 
-Supported operations:
+Operações suportadas:
 
 - `Get Counts`
 - `Get Many`
@@ -1059,7 +1059,7 @@ Supported operations:
 - `Get Reporting Events`
 - `Assign`
 
-The node sends requests to:
+O node envia requisições para:
 
 ```text
 GET /api/v1/accounts/{accountId}/conversations/meta
@@ -1080,7 +1080,7 @@ GET /api/v1/accounts/{accountId}/conversations/{id}/conversation_events
 POST /api/v1/accounts/{accountId}/conversations/{id}/assignments
 ```
 
-Supported fields:
+Campos suportados:
 
 - `Conversation ID`
 - `Assignee Type`
@@ -1104,11 +1104,11 @@ Supported fields:
 - `Typing Status`
 - `Private Note`
 
-## Local validation
+## Validação local
 
 ```bash
 npm run lint
 npm run build
 ```
 
-If you are using an older Node.js release, the current `@n8n/node-cli` can fail during local validation. Use Node.js 22+ before publishing or submitting the package for review.
+Se você estiver usando uma versão mais antiga do Node.js, o `@n8n/node-cli` atual pode falhar durante a validação local. Use Node.js 22+ antes de publicar ou submeter o pacote para revisão.

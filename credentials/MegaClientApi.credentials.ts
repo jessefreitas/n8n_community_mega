@@ -11,13 +11,13 @@ export class MegaClientApi implements ICredentialType {
 
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Base URL',
+			displayName: 'URL Base',
 			name: 'baseUrl',
 			type: 'string',
 			default: '',
 			placeholder: 'https://app.example.com',
 			required: true,
-			description: 'Base URL of the Mega or Chatwoot instance',
+			description: 'URL base da instância Mega ou Chatwoot',
 		},
 		{
 			displayName: 'Inbox Identifier',
@@ -25,7 +25,7 @@ export class MegaClientApi implements ICredentialType {
 			type: 'string',
 			default: '',
 			required: true,
-			description: 'Public inbox identifier used by Client APIs',
+			description: 'Identificador público da caixa de entrada usado pelas APIs Client',
 		},
 	];
 

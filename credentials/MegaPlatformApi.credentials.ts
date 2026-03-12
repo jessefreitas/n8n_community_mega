@@ -17,13 +17,13 @@ export class MegaPlatformApi implements ICredentialType {
 
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Base URL',
+			displayName: 'URL Base',
 			name: 'baseUrl',
 			type: 'string',
 			default: '',
 			placeholder: 'https://app.example.com',
 			required: true,
-			description: 'Base URL of the Mega or Chatwoot instance',
+			description: 'URL base da instância Mega ou Chatwoot',
 		},
 		{
 			displayName: 'Platform API Access Token',
@@ -32,7 +32,7 @@ export class MegaPlatformApi implements ICredentialType {
 			typeOptions: { password: true },
 			default: '',
 			required: true,
-			description: 'Platform app token sent in the api_access_token header',
+			description: 'Token do app platform enviado no header api_access_token',
 		},
 	];
 

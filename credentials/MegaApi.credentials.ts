@@ -17,13 +17,13 @@ export class MegaApi implements ICredentialType {
 
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Base URL',
+			displayName: 'URL Base',
 			name: 'baseUrl',
 			type: 'string',
 			default: '',
 			placeholder: 'https://app.example.com',
 			required: true,
-			description: 'Base URL of the Mega or Chatwoot instance',
+			description: 'URL base da instância Mega ou Chatwoot',
 		},
 		{
 			displayName: 'API Access Token',
@@ -40,7 +40,7 @@ export class MegaApi implements ICredentialType {
 			type: 'string',
 			default: '',
 			required: true,
-			description: 'External Chatwoot account identifier used in account-scoped routes',
+			description: 'Identificador externo da conta Chatwoot usado nas rotas com escopo de conta',
 		},
 	];
 
