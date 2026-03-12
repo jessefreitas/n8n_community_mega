@@ -7,6 +7,7 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 - `Mega` node regular para APIs do Mega com escopo de conta
 - `Mega Client` node regular para APIs Client públicas
 - `Mega Dashboard App` node regular para gerar recursos de app embutido servido pelo n8n
+- `Mega Dashboard Script` node regular para gerar scripts de dashboard injetados por URL
 - `Mega Platform` node regular para APIs Platform do Mega
 - `Account -> Get` operation
 - `Account -> Update` operation
@@ -31,6 +32,7 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 - `Webhook -> Get Many`, `Create`, `Update`, and `Delete` operations
 - `Mega API` credential with `Base URL`, `API Access Token`, and `Mega Account ID`
 - `Mega Dashboard App` credential with `Base App URL`, `Shared Secret`, and `Allowed Mega Origin`
+- `Mega Dashboard Script API` credential with `Base Script URL`, `Default Iframe URL`, and `Allowed Mega Origin`
 - `Mega Client API` credential with `Base URL` and `Inbox Identifier`
 - `Mega Platform API` credential with `Base URL` and `Platform API Access Token`
 - Teste de conexão da credencial usando `GET /api/v1/profile`
@@ -153,6 +155,28 @@ Importante:
 - o app embutido deve ser servido por um webhook do n8n ou outra URL pública sob seu controle
 - injeção de script de dashboard está fora do escopo deste node
 
+## Mega Dashboard Script
+
+Use o node `Mega Dashboard Script` com a credencial `Mega Dashboard Script API` para gerar o JavaScript que o Mega carrega por URL na área de Dashboard Scripts.
+
+Crie uma credencial `Mega Dashboard Script API` no n8n com:
+
+- `Base Script URL`: URL pública que vai servir o JavaScript injetado
+- `Default Iframe URL`: URL padrão aberta dentro do painel embutido
+- `Allowed Mega Origin`: origem esperada do Mega que pode executar o script
+
+Operações suportadas em `Mega Dashboard Script`:
+
+- `Generate Config`
+- `Generate Script`
+
+Importante:
+
+- este node é para o caso em que o Mega espera um link de script para injeção
+- o script gerado adiciona um item na sidebar e abre um iframe dentro do painel do Mega
+- o script tenta manter a sidebar visível, acompanha o tema claro/escuro e pode fechar o painel ao clicar em outro item da sidebar
+- o JavaScript deve ser servido com `content-type: application/javascript`
+
 ## Operações
 
 ### Account -> Get
@@ -202,6 +226,23 @@ Fluxo recomendado:
 3. Use `Generate Config` para coletar a URL do iframe e os valores de registro no Mega.
 4. Registre o app manualmente no Mega.
 5. Use `Verify Request` no fluxo de backend antes de processar ações sensíveis.
+
+## Mega Dashboard Script Operations
+
+O node `Mega Dashboard Script` ajuda a gerar um script injetável por URL para a área de Dashboard Scripts do Mega.
+
+Saídas geradas:
+
+- `Generate Config`: retorna a URL pública do script, um loader inline opcional, a configuração final do script e os passos manuais
+- `Generate Script`: retorna o JavaScript completo com `content_type` igual a `application/javascript; charset=utf-8`
+
+Fluxo recomendado:
+
+1. Crie um webhook público no n8n que vai responder com o JavaScript do script.
+2. Use `Generate Script` para obter o JavaScript e devolva esse conteúdo no webhook com `application/javascript`.
+3. Use `Generate Config` para obter a URL do script e o loader inline opcional.
+4. No Mega, configure o link do Dashboard Script apontando para a URL pública do script ou cole o loader inline, se necessário.
+5. Recarregue o dashboard do Mega e valide se o botão aparece na posição escolhida.
 
 ## Mega Platform Operations
 
