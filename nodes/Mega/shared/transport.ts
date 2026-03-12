@@ -23,6 +23,7 @@ export async function megaApiRequest(
 	method: IHttpRequestMethods,
 	route: string,
 	body?: IDataObject,
+	qs?: IDataObject,
 ) {
 	const credentials = await this.getCredentials('megaApi');
 	const baseUrl = normalizeBaseUrl(credentials.baseUrl as string);
@@ -31,6 +32,7 @@ export async function megaApiRequest(
 		method,
 		url: `${baseUrl}${route}`,
 		body,
+		qs,
 		json: true,
 	};
 
