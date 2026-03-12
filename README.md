@@ -653,6 +653,8 @@ Supported operations:
 - `Create Inbox`
 - `Get Contactable Inboxes`
 - `Get Labels`
+- `Add Labels`
+- `Remove Labels`
 - `Set Labels`
 - `Merge`
 

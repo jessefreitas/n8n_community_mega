@@ -2085,7 +2085,7 @@ const contactLabelsProperty: INodeProperties = {
 	displayOptions: {
 		show: {
 			resource: ['contact'],
-			operation: ['setLabels'],
+			operation: ['addLabels', 'removeLabels', 'setLabels'],
 		},
 	},
 };
@@ -4209,6 +4209,12 @@ export class Mega implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
+						name: 'Add Labels',
+						value: 'addLabels',
+						description: 'Add labels to a contact',
+						action: 'Add labels to a contact',
+					},
+					{
 						name: 'Create',
 						value: 'create',
 						description: 'Create a contact',
@@ -4279,6 +4285,12 @@ export class Mega implements INodeType {
 						value: 'merge',
 						description: 'Merge two contacts',
 						action: 'Merge two contacts',
+					},
+					{
+						name: 'Remove Labels',
+						value: 'removeLabels',
+						description: 'Remove labels from a contact',
+						action: 'Remove labels from a contact',
 					},
 					{
 						name: 'Search',
@@ -5978,6 +5990,43 @@ export class Mega implements INodeType {
 						this,
 						'GET',
 						`/api/v1/accounts/${accountId}/contacts/${contactId}/labels`,
+					)) as IDataObject;
+				} else if (resource === 'contact' && operation === 'addLabels') {
+					const contactId = this.getNodeParameter('contactRecordId', itemIndex) as number;
+					const labels = this.getNodeParameter('contactLabels', itemIndex, []) as string[];
+					const currentLabels = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/contacts/${contactId}/labels`,
+					)) as IDataObject;
+					const existingLabels = Array.isArray(currentLabels.payload)
+						? (currentLabels.payload as string[])
+						: [];
+					const mergedLabels = [...new Set([...existingLabels, ...labels])];
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/contacts/${contactId}/labels`,
+						{ labels: mergedLabels },
+					)) as IDataObject;
+				} else if (resource === 'contact' && operation === 'removeLabels') {
+					const contactId = this.getNodeParameter('contactRecordId', itemIndex) as number;
+					const labels = this.getNodeParameter('contactLabels', itemIndex, []) as string[];
+					const currentLabels = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/contacts/${contactId}/labels`,
+					)) as IDataObject;
+					const existingLabels = Array.isArray(currentLabels.payload)
+						? (currentLabels.payload as string[])
+						: [];
+					const labelsToRemove = new Set(labels);
+					const nextLabels = existingLabels.filter((label) => !labelsToRemove.has(label));
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/contacts/${contactId}/labels`,
+						{ labels: nextLabels },
 					)) as IDataObject;
 				} else if (resource === 'contact' && operation === 'setLabels') {
 					const contactId = this.getNodeParameter('contactRecordId', itemIndex) as number;
