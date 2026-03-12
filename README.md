@@ -866,12 +866,21 @@ Campos suportados:
 - `After Message ID`
 - `Before Message ID`
 - `Content`
+- `Attachments Source`
+- `Attachment Binary Properties`
 - `Message Type`
 - `Private`
 - `Content Type`
 - `Content Attributes`
 - `Campaign ID`
 - `Template Params`
+
+`Message -> Create` supports optional multipart uploads using n8n binary properties.
+
+- Use `Attachment Binary Properties` with a JSON array such as `["data", "audio", "pdf"]`
+- Multiple attachments are supported in the same message
+- Message text becomes optional when at least one attachment is provided
+- Files are sent as `attachments[]` in `multipart/form-data`
 
 ### Scheduled Message
 
@@ -1054,6 +1063,8 @@ Campos suportados:
 - `Initial Message`
 - `Message Content`
 - `Message Visibility`
+- `Attachments Source`
+- `Attachment Binary Properties`
 - `Additional Attributes`
 - `Custom Attributes`
 - `Priority`
@@ -1069,6 +1080,13 @@ Campos suportados:
 
 - `Normal` sends the message in `POST /conversations`
 - `Private` creates the conversation first and then sends a private note in `POST /conversations/{id}/messages`
+
+When attachments are provided in `Create and Send Message`, the node creates the conversation first and then sends the message in a second request to `POST /conversations/{id}/messages`, for both `Normal` and `Private`.
+
+- Use `Attachment Binary Properties` with a JSON array such as `["data", "audio", "pdf"]`
+- Multiple attachments are supported in the same message
+- Message text becomes optional when at least one attachment is provided
+- Files are sent as `attachments[]` in `multipart/form-data`
 
 This first version supports one message only and does not expose advanced message payload fields such as `content_type`, `template_params`, `campaign_id`, or `content_attributes`.
 

@@ -1,4 +1,5 @@
 import type {
+	IBinaryData,
 	IDataObject,
 	IExecuteFunctions,
 	INodeExecutionData,
@@ -8,6 +9,7 @@ import type {
 	INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { Blob, FormData } from 'node-fetch-native';
 
 import { megaApiRequest } from './shared/transport';
 
@@ -148,8 +150,7 @@ const conversationCreateAndSendProperties: INodeProperties[] = [
 			rows: 4,
 		},
 		default: '',
-		required: true,
-		description: 'Message content to send after creating the conversation',
+		description: 'Message content to send after creating the conversation. Optional when attachments are provided.',
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
@@ -167,6 +168,33 @@ const conversationCreateAndSendProperties: INodeProperties[] = [
 		],
 		default: 'normal',
 		description: 'Whether to send a normal message or a private note',
+		displayOptions: {
+			show: {
+				resource: ['conversation'],
+				operation: ['createAndSendMessage'],
+			},
+		},
+	},
+	{
+		displayName: 'Attachments Source',
+		name: 'conversationCombinedAttachmentsSource',
+		type: 'options',
+		options: [{ name: 'Binary Properties', value: 'binaryProperties' }],
+		default: 'binaryProperties',
+		description: 'Where to read attachments from',
+		displayOptions: {
+			show: {
+				resource: ['conversation'],
+				operation: ['createAndSendMessage'],
+			},
+		},
+	},
+	{
+		displayName: 'Attachment Binary Properties',
+		name: 'conversationCombinedAttachmentBinaryProperties',
+		type: 'json',
+		default: '[]',
+		description: 'JSON array with binary property names, for example ["data", "audio", "pdf"]',
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
@@ -3145,8 +3173,34 @@ const messageCreateProperties: INodeProperties[] = [
 			rows: 4,
 		},
 		default: '',
-		required: true,
-		description: 'Content of the message',
+		description: 'Content of the message. Optional when attachments are provided.',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Attachments Source',
+		name: 'messageCreateAttachmentsSource',
+		type: 'options',
+		options: [{ name: 'Binary Properties', value: 'binaryProperties' }],
+		default: 'binaryProperties',
+		description: 'Where to read attachments from',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Attachment Binary Properties',
+		name: 'messageCreateAttachmentBinaryProperties',
+		type: 'json',
+		default: '[]',
+		description: 'JSON array with binary property names, for example ["data", "audio", "pdf"]',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -4973,6 +5027,165 @@ export class Mega implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 		const credentials = await this.getCredentials('megaApi');
 		const accountId = credentials.accountId as string;
+
+		const parseAttachmentPropertyNames = (
+			itemIndex: number,
+			parameterName: string,
+		): string[] => {
+			const rawValue = this.getNodeParameter(parameterName, itemIndex, '[]') as string | string[];
+			let parsedValue: unknown;
+
+			try {
+				parsedValue =
+					typeof rawValue === 'string'
+						? (JSON.parse(rawValue || '[]') as unknown)
+						: (rawValue as unknown);
+			} catch {
+				throw new NodeOperationError(
+					this.getNode(),
+					`${parameterName} must be a valid JSON array of strings`,
+					{ itemIndex },
+				);
+			}
+
+			if (!Array.isArray(parsedValue)) {
+				throw new NodeOperationError(
+					this.getNode(),
+					`${parameterName} must be a JSON array of strings`,
+					{ itemIndex },
+				);
+			}
+
+			return parsedValue.map((value, index) => {
+				if (typeof value !== 'string' || !value.trim()) {
+					throw new NodeOperationError(
+						this.getNode(),
+						`${parameterName}[${index}] must be a non-empty string`,
+						{ itemIndex },
+					);
+				}
+
+				return value.trim();
+			});
+		};
+
+		const appendFormValue = (
+			formData: InstanceType<typeof FormData>,
+			key: string,
+			value: unknown,
+		): void => {
+			if (value === undefined || value === null) {
+				return;
+			}
+
+			if (typeof value === 'object') {
+				formData.append(key, JSON.stringify(value));
+				return;
+			}
+
+			formData.append(key, String(value));
+		};
+
+		const buildMultipartFormData = async (
+			itemIndex: number,
+			fields: Record<string, unknown>,
+			attachmentPropertyNames: string[],
+		): Promise<InstanceType<typeof FormData>> => {
+			const formData = new FormData();
+
+			for (const [key, value] of Object.entries(fields)) {
+				appendFormValue(formData, key, value);
+			}
+
+			for (const propertyName of attachmentPropertyNames) {
+				const binaryData = this.helpers.assertBinaryData(itemIndex, propertyName) as IBinaryData;
+				const buffer = await this.helpers.getBinaryDataBuffer(itemIndex, propertyName);
+				const mimeType = binaryData.mimeType || 'application/octet-stream';
+				const fileName = binaryData.fileName || propertyName;
+				formData.append('attachments[]', new Blob([buffer], { type: mimeType }), fileName);
+			}
+
+			return formData;
+		};
+
+		const createMessagePayload = (
+			itemIndex: number,
+			content: string,
+			privateMessage: boolean,
+		): IDataObject => {
+			const body: IDataObject = {
+				message_type: this.getNodeParameter('messageCreateType', itemIndex, 'outgoing') as string,
+				private: privateMessage,
+				content_type: this.getNodeParameter('messageCreateContentType', itemIndex, 'text') as string,
+			};
+			const trimmedContent = content.trim();
+			const contentAttributes = this.getNodeParameter(
+				'messageCreateContentAttributes',
+				itemIndex,
+				{},
+			) as IDataObject;
+			const templateParams = this.getNodeParameter(
+				'messageCreateTemplateParams',
+				itemIndex,
+				{},
+			) as IDataObject;
+			const campaignId = this.getNodeParameter('messageCreateCampaignId', itemIndex, 0) as number;
+
+			if (trimmedContent) {
+				body.content = trimmedContent;
+			}
+			if (Object.keys(contentAttributes).length > 0) {
+				body.content_attributes = contentAttributes;
+			}
+			if (Object.keys(templateParams).length > 0) {
+				body.template_params = templateParams;
+			}
+			if (campaignId > 0) {
+				body.campaign_id = campaignId;
+			}
+
+			return body;
+		};
+
+		const sendConversationMessage = async (
+			itemIndex: number,
+			conversationId: number,
+			content: string,
+			privateMessage: boolean,
+			attachmentPropertyNames: string[],
+			messageOverrides?: Partial<IDataObject>,
+		): Promise<IDataObject> => {
+			const basePayload: IDataObject = {
+				content_type: 'text',
+				message_type: 'outgoing',
+				private: privateMessage,
+				...(messageOverrides ?? {}),
+			};
+			const trimmedContent = content.trim();
+
+			if (trimmedContent) {
+				basePayload.content = trimmedContent;
+			}
+
+			if (attachmentPropertyNames.length === 0) {
+				return (await megaApiRequest.call(
+					this,
+					'POST',
+					`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+					basePayload,
+				)) as IDataObject;
+			}
+
+			const formData = await buildMultipartFormData(itemIndex, basePayload, attachmentPropertyNames);
+
+			return (await megaApiRequest.call(
+				this,
+				'POST',
+				`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+				formData,
+			)) as IDataObject;
+		};
+
 		const buildConversationCreateBody = (itemIndex: number, messageContent = ''): IDataObject => {
 			const body: IDataObject = {
 				source_id: this.getNodeParameter('sourceId', itemIndex) as string,
@@ -5485,44 +5698,47 @@ export class Mega implements INodeType {
 					)) as IDataObject;
 				} else if (resource === 'message' && operation === 'create') {
 					const conversationId = this.getNodeParameter('messageConversationId', itemIndex) as number;
-					const body: IDataObject = {
-						content: this.getNodeParameter('messageCreateContent', itemIndex) as string,
-						message_type: this.getNodeParameter('messageCreateType', itemIndex, 'outgoing') as string,
-						private: this.getNodeParameter('messageCreatePrivate', itemIndex, false) as boolean,
-						content_type: this.getNodeParameter(
-							'messageCreateContentType',
+					const messageContent = this.getNodeParameter('messageCreateContent', itemIndex, '') as string;
+					const privateMessage = this.getNodeParameter(
+						'messageCreatePrivate',
+						itemIndex,
+						false,
+					) as boolean;
+					const attachmentPropertyNames = parseAttachmentPropertyNames(
+						itemIndex,
+						'messageCreateAttachmentBinaryProperties',
+					);
+
+					if (!messageContent.trim() && attachmentPropertyNames.length === 0) {
+						throw new NodeOperationError(
+							this.getNode(),
+							'Content must be provided when no attachments are sent',
+							{ itemIndex },
+						);
+					}
+
+					const body = createMessagePayload(itemIndex, messageContent, privateMessage);
+
+					if (attachmentPropertyNames.length === 0) {
+						response = (await megaApiRequest.call(
+							this,
+							'POST',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+							body,
+						)) as IDataObject;
+					} else {
+						const formData = await buildMultipartFormData(
 							itemIndex,
-							'text',
-						) as string,
-					};
-					const contentAttributes = this.getNodeParameter(
-						'messageCreateContentAttributes',
-						itemIndex,
-						{},
-					) as IDataObject;
-					const templateParams = this.getNodeParameter(
-						'messageCreateTemplateParams',
-						itemIndex,
-						{},
-					) as IDataObject;
-					const campaignId = this.getNodeParameter('messageCreateCampaignId', itemIndex, 0) as number;
-
-					if (Object.keys(contentAttributes).length > 0) {
-						body.content_attributes = contentAttributes;
+							body as Record<string, unknown>,
+							attachmentPropertyNames,
+						);
+						response = (await megaApiRequest.call(
+							this,
+							'POST',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+							formData,
+						)) as IDataObject;
 					}
-					if (Object.keys(templateParams).length > 0) {
-						body.template_params = templateParams;
-					}
-					if (campaignId > 0) {
-						body.campaign_id = campaignId;
-					}
-
-					response = (await megaApiRequest.call(
-						this,
-						'POST',
-						`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
-						body,
-					)) as IDataObject;
 				} else if (resource === 'message' && operation === 'delete') {
 					const conversationId = this.getNodeParameter('messageConversationId', itemIndex) as number;
 					const messageId = this.getNodeParameter('messageId', itemIndex) as number;
@@ -6903,22 +7119,27 @@ export class Mega implements INodeType {
 					const messageContent = this.getNodeParameter(
 						'conversationCombinedMessageContent',
 						itemIndex,
+						'',
 					) as string;
 					const messageVisibility = this.getNodeParameter(
 						'conversationCombinedMessageVisibility',
 						itemIndex,
 						'normal',
 					) as string;
+					const attachmentPropertyNames = parseAttachmentPropertyNames(
+						itemIndex,
+						'conversationCombinedAttachmentBinaryProperties',
+					);
 
-					if (!messageContent.trim()) {
+					if (!messageContent.trim() && attachmentPropertyNames.length === 0) {
 						throw new NodeOperationError(
 							this.getNode(),
-							'Message Content must be provided',
+							'Message Content must be provided when no attachments are sent',
 							{ itemIndex },
 						);
 					}
 
-					if (messageVisibility === 'normal') {
+					if (messageVisibility === 'normal' && attachmentPropertyNames.length === 0) {
 						const body = buildConversationCreateBody(itemIndex, messageContent);
 						response = (await megaApiRequest.call(
 							this,
@@ -6942,17 +7163,13 @@ export class Mega implements INodeType {
 						}
 
 						try {
-							const messageResponse = (await megaApiRequest.call(
-								this,
-								'POST',
-								`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
-								{
-									content: messageContent,
-									message_type: 'outgoing',
-									private: true,
-									content_type: 'text',
-								},
-							)) as IDataObject;
+							const messageResponse = await sendConversationMessage(
+								itemIndex,
+								conversationId,
+								messageContent,
+								messageVisibility === 'private',
+								attachmentPropertyNames,
+							);
 
 							response = {
 								conversation: conversationResponse,
@@ -6960,7 +7177,7 @@ export class Mega implements INodeType {
 							};
 						} catch (error) {
 							throw new Error(
-								`Conversation ${conversationId} was created but sending the private message failed: ${(error as Error).message}`,
+								`Conversation ${conversationId} was created but sending the ${messageVisibility} message failed: ${(error as Error).message}`,
 							);
 						}
 					}

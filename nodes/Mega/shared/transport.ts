@@ -7,6 +7,7 @@ import type {
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
+import { FormData } from 'node-fetch-native';
 
 type RequestContext =
 	| IExecuteFunctions
@@ -22,8 +23,9 @@ export async function megaApiRequest(
 	this: RequestContext,
 	method: IHttpRequestMethods,
 	route: string,
-	body?: IDataObject,
+	body?: IHttpRequestOptions['body'],
 	qs?: IDataObject,
+	requestOptions?: Partial<IHttpRequestOptions>,
 ) {
 	const credentials = await this.getCredentials('megaApi');
 	const baseUrl = normalizeBaseUrl(credentials.baseUrl as string);
@@ -31,10 +33,14 @@ export async function megaApiRequest(
 	const options: IHttpRequestOptions = {
 		method,
 		url: `${baseUrl}${route}`,
-		body,
-		qs,
-		json: true,
+		...(body !== undefined ? { body } : {}),
+		...(qs !== undefined ? { qs } : {}),
+		...requestOptions,
 	};
+
+	if (options.json === undefined) {
+		options.json = !(typeof FormData !== 'undefined' && options.body instanceof FormData);
+	}
 
 	return this.helpers.httpRequestWithAuthentication.call(this, 'megaApi', options);
 }
