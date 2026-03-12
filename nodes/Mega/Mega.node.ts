@@ -9,7 +9,6 @@ import type {
 	INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
-import { Blob, FormData } from 'node-fetch-native';
 
 import { megaApiRequest } from './shared/transport';
 
@@ -5027,6 +5026,26 @@ export class Mega implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 		const credentials = await this.getCredentials('megaApi');
 		const accountId = credentials.accountId as string;
+		const runtimeGlobals = globalThis as typeof globalThis & {
+			Blob?: new (parts?: Array<ArrayBuffer | ArrayBufferView | string>, options?: { type?: string }) => unknown;
+			FormData?: new () => { append(name: string, value: unknown, fileName?: string): void };
+		};
+		const createRuntimeFormData = (): {
+			append(name: string, value: unknown, fileName?: string): void;
+		} => {
+			if (typeof runtimeGlobals.FormData === 'undefined') {
+				throw new NodeOperationError(this.getNode(), 'FormData is not available in this runtime');
+			}
+
+			return new runtimeGlobals.FormData();
+		};
+		const createRuntimeBlob = (buffer: Uint8Array, mimeType: string): unknown => {
+			if (typeof runtimeGlobals.Blob === 'undefined') {
+				throw new NodeOperationError(this.getNode(), 'Blob is not available in this runtime');
+			}
+
+			return new runtimeGlobals.Blob([buffer], { type: mimeType });
+		};
 
 		const parseAttachmentPropertyNames = (
 			itemIndex: number,
@@ -5070,7 +5089,7 @@ export class Mega implements INodeType {
 		};
 
 		const appendFormValue = (
-			formData: InstanceType<typeof FormData>,
+			formData: { append(name: string, value: unknown, fileName?: string): void },
 			key: string,
 			value: unknown,
 		): void => {
@@ -5090,8 +5109,8 @@ export class Mega implements INodeType {
 			itemIndex: number,
 			fields: Record<string, unknown>,
 			attachmentPropertyNames: string[],
-		): Promise<InstanceType<typeof FormData>> => {
-			const formData = new FormData();
+		): Promise<{ append(name: string, value: unknown, fileName?: string): void }> => {
+			const formData = createRuntimeFormData();
 
 			for (const [key, value] of Object.entries(fields)) {
 				appendFormValue(formData, key, value);
@@ -5102,7 +5121,7 @@ export class Mega implements INodeType {
 				const buffer = await this.helpers.getBinaryDataBuffer(itemIndex, propertyName);
 				const mimeType = binaryData.mimeType || 'application/octet-stream';
 				const fileName = binaryData.fileName || propertyName;
-				formData.append('attachments[]', new Blob([buffer], { type: mimeType }), fileName);
+				formData.append('attachments[]', createRuntimeBlob(buffer, mimeType), fileName);
 			}
 
 			return formData;

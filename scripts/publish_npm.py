@@ -1,4 +1,5 @@
 import argparse
+import getpass
 import os
 import shutil
 import subprocess
@@ -58,7 +59,10 @@ def main() -> int:
 
     token = args.token.strip()
     if not token:
-        print("Missing npm token. Pass --token or set NPM_TOKEN.", file=sys.stderr)
+        token = getpass.getpass("NPM token: ").strip()
+
+    if not token:
+        print("Missing npm token. Pass --token, set NPM_TOKEN, or enter it when prompted.", file=sys.stderr)
         return 2
 
     repo_root = Path(__file__).resolve().parent.parent

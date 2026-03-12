@@ -7,7 +7,6 @@ import type {
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
-import { FormData } from 'node-fetch-native';
 
 type RequestContext =
 	| IExecuteFunctions
@@ -39,7 +38,12 @@ export async function megaApiRequest(
 	};
 
 	if (options.json === undefined) {
-		options.json = !(typeof FormData !== 'undefined' && options.body instanceof FormData);
+		options.json = !(
+			options.body &&
+			typeof options.body === 'object' &&
+			'append' in options.body &&
+			options.body.constructor?.name === 'FormData'
+		);
 	}
 
 	return this.helpers.httpRequestWithAuthentication.call(this, 'megaApi', options);
