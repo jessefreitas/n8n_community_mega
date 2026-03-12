@@ -22,7 +22,7 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
 			},
 		},
 	},
@@ -39,7 +39,7 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
 			},
 		},
 	},
@@ -56,7 +56,7 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
 			},
 		},
 	},
@@ -75,7 +75,7 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
 			},
 		},
 	},
@@ -91,7 +91,7 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
 			},
 		},
 	},
@@ -107,7 +107,7 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
 			},
 		},
 	},
@@ -133,7 +133,44 @@ const conversationCreateProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['conversation'],
-				operation: ['create'],
+				operation: ['create', 'createAndSendMessage'],
+			},
+		},
+	},
+];
+
+const conversationCreateAndSendProperties: INodeProperties[] = [
+	{
+		displayName: 'Message Content',
+		name: 'conversationCombinedMessageContent',
+		type: 'string',
+		typeOptions: {
+			rows: 4,
+		},
+		default: '',
+		required: true,
+		description: 'Message content to send after creating the conversation',
+		displayOptions: {
+			show: {
+				resource: ['conversation'],
+				operation: ['createAndSendMessage'],
+			},
+		},
+	},
+	{
+		displayName: 'Message Visibility',
+		name: 'conversationCombinedMessageVisibility',
+		type: 'options',
+		options: [
+			{ name: 'Normal', value: 'normal' },
+			{ name: 'Private', value: 'private' },
+		],
+		default: 'normal',
+		description: 'Whether to send a normal message or a private note',
+		displayOptions: {
+			show: {
+				resource: ['conversation'],
+				operation: ['createAndSendMessage'],
 			},
 		},
 	},
@@ -4483,6 +4520,12 @@ export class Mega implements INodeType {
 						action: 'Create a conversation',
 					},
 					{
+						name: 'Create and Send Message',
+						value: 'createAndSendMessage',
+						description: 'Create a conversation and send a message',
+						action: 'Create a conversation and send a message',
+					},
+					{
 						name: 'Filter',
 						value: 'filter',
 						description: 'Filter conversations',
@@ -4913,6 +4956,7 @@ export class Mega implements INodeType {
 			...conversationListProperties,
 			conversationFilterProperty,
 			...conversationCreateProperties,
+			...conversationCreateAndSendProperties,
 			...conversationUpdateProperties,
 			...conversationToggleStatusProperties,
 			conversationTogglePriorityProperty,
@@ -4929,6 +4973,46 @@ export class Mega implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 		const credentials = await this.getCredentials('megaApi');
 		const accountId = credentials.accountId as string;
+		const buildConversationCreateBody = (itemIndex: number, messageContent = ''): IDataObject => {
+			const body: IDataObject = {
+				source_id: this.getNodeParameter('sourceId', itemIndex) as string,
+				inbox_id: this.getNodeParameter('inboxId', itemIndex) as number,
+				contact_id: this.getNodeParameter('contactId', itemIndex) as number,
+				status: this.getNodeParameter('status', itemIndex) as string,
+			};
+
+			const assigneeId = this.getNodeParameter('assigneeId', itemIndex) as number;
+			const additionalAttributes = this.getNodeParameter(
+				'additionalAttributes',
+				itemIndex,
+				{},
+			) as IDataObject;
+			const customAttributes = this.getNodeParameter(
+				'customAttributes',
+				itemIndex,
+				{},
+			) as IDataObject;
+
+			if (assigneeId > 0) {
+				body.assignee_id = assigneeId;
+			}
+
+			if (messageContent.trim()) {
+				body.message = {
+					content: messageContent,
+				};
+			}
+
+			if (Object.keys(additionalAttributes).length > 0) {
+				body.additional_attributes = additionalAttributes;
+			}
+
+			if (Object.keys(customAttributes).length > 0) {
+				body.custom_attributes = customAttributes;
+			}
+
+			return body;
+		};
 
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
@@ -6806,43 +6890,8 @@ export class Mega implements INodeType {
 						`/api/v1/accounts/${accountId}/conversations/${conversationId}`,
 					)) as IDataObject;
 				} else if (resource === 'conversation' && operation === 'create') {
-					const body: IDataObject = {
-						source_id: this.getNodeParameter('sourceId', itemIndex) as string,
-						inbox_id: this.getNodeParameter('inboxId', itemIndex) as number,
-						contact_id: this.getNodeParameter('contactId', itemIndex) as number,
-						status: this.getNodeParameter('status', itemIndex) as string,
-					};
-
-					const assigneeId = this.getNodeParameter('assigneeId', itemIndex) as number;
 					const messageContent = this.getNodeParameter('messageContent', itemIndex) as string;
-					const additionalAttributes = this.getNodeParameter(
-						'additionalAttributes',
-						itemIndex,
-						{},
-					) as IDataObject;
-					const customAttributes = this.getNodeParameter(
-						'customAttributes',
-						itemIndex,
-						{},
-					) as IDataObject;
-
-					if (assigneeId > 0) {
-						body.assignee_id = assigneeId;
-					}
-
-					if (messageContent.trim()) {
-						body.message = {
-							content: messageContent,
-						};
-					}
-
-					if (Object.keys(additionalAttributes).length > 0) {
-						body.additional_attributes = additionalAttributes;
-					}
-
-					if (Object.keys(customAttributes).length > 0) {
-						body.custom_attributes = customAttributes;
-					}
+					const body = buildConversationCreateBody(itemIndex, messageContent);
 
 					response = (await megaApiRequest.call(
 						this,
@@ -6850,6 +6899,71 @@ export class Mega implements INodeType {
 						`/api/v1/accounts/${accountId}/conversations`,
 						body,
 					)) as IDataObject;
+				} else if (resource === 'conversation' && operation === 'createAndSendMessage') {
+					const messageContent = this.getNodeParameter(
+						'conversationCombinedMessageContent',
+						itemIndex,
+					) as string;
+					const messageVisibility = this.getNodeParameter(
+						'conversationCombinedMessageVisibility',
+						itemIndex,
+						'normal',
+					) as string;
+
+					if (!messageContent.trim()) {
+						throw new NodeOperationError(
+							this.getNode(),
+							'Message Content must be provided',
+							{ itemIndex },
+						);
+					}
+
+					if (messageVisibility === 'normal') {
+						const body = buildConversationCreateBody(itemIndex, messageContent);
+						response = (await megaApiRequest.call(
+							this,
+							'POST',
+							`/api/v1/accounts/${accountId}/conversations`,
+							body,
+						)) as IDataObject;
+					} else {
+						const conversationResponse = (await megaApiRequest.call(
+							this,
+							'POST',
+							`/api/v1/accounts/${accountId}/conversations`,
+							buildConversationCreateBody(itemIndex),
+						)) as IDataObject;
+						const conversationId = Number(conversationResponse.id ?? 0);
+
+						if (conversationId <= 0) {
+							throw new Error(
+								'Conversation was created but no conversation ID was returned for the private message step',
+							);
+						}
+
+						try {
+							const messageResponse = (await megaApiRequest.call(
+								this,
+								'POST',
+								`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+								{
+									content: messageContent,
+									message_type: 'outgoing',
+									private: true,
+									content_type: 'text',
+								},
+							)) as IDataObject;
+
+							response = {
+								conversation: conversationResponse,
+								message: messageResponse,
+							};
+						} catch (error) {
+							throw new Error(
+								`Conversation ${conversationId} was created but sending the private message failed: ${(error as Error).message}`,
+							);
+						}
+					}
 				} else if (resource === 'conversation' && operation === 'update') {
 					const conversationId = this.getNodeParameter('conversationId', itemIndex) as number;
 					const body: IDataObject = {

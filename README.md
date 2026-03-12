@@ -17,7 +17,7 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 - `Canned Response -> Get Many`, `Create`, `Update`, and `Delete` operations
 - `Custom Filter -> Get Many`, `Create`, `Get`, `Update`, and `Delete` operations
 - `Contact -> Get Many`, `Create`, `Create Note`, `Get`, `Update`, `Delete`, `Delete Note`, `Get Conversations`, `Search`, `Filter`, `Create Inbox`, `Get Contactable Inboxes`, and `Merge` operations
-- `Conversation -> Get Counts`, `Get Many`, `Create`, `Filter`, `Get`, `Update`, `Toggle Status`, `Toggle Priority`, `Toggle Typing Status`, `Set Custom Attributes`, `Get Labels`, `Set Labels`, `Get Reporting Events`, and `Assign` operations
+- `Conversation -> Get Counts`, `Get Many`, `Create`, `Create and Send Message`, `Filter`, `Get`, `Update`, `Toggle Status`, `Toggle Priority`, `Toggle Typing Status`, `Set Custom Attributes`, `Get Labels`, `Set Labels`, `Get Reporting Events`, and `Assign` operations
 - `Custom Attribute -> Get Many`, `Create`, `Get`, `Update`, and `Delete` operations
 - `Inbox -> Get Many`, `Get`, `Create`, `Update`, `Get Agent Bot`, `Set Agent Bot`, `Get Agents`, `Add Agent`, `Remove Agent`, and `Update Agents` operations
 - `Integration -> Get Many`, `Create`, `Update`, and `Delete` operations
@@ -1000,6 +1000,7 @@ Operacoes suportadas:
 - `Get Counts`
 - `Get Many`
 - `Create`
+- `Create and Send Message`
 - `Filter`
 - `Get`
 - `Update`
@@ -1023,6 +1024,7 @@ POST /api/v1/accounts/{accountId}/conversations
 POST /api/v1/accounts/{accountId}/conversations/filter
 GET /api/v1/accounts/{accountId}/conversations/{id}
 PATCH /api/v1/accounts/{accountId}/conversations/{id}
+POST /api/v1/accounts/{accountId}/conversations/{id}/messages
 POST /api/v1/accounts/{accountId}/conversations/{id}/toggle_status
 POST /api/v1/accounts/{accountId}/conversations/{id}/toggle_priority
 POST /api/v1/accounts/{accountId}/conversations/{id}/toggle_typing_status
@@ -1050,6 +1052,8 @@ Campos suportados:
 - `Contact ID`
 - `Assignee ID`
 - `Initial Message`
+- `Message Content`
+- `Message Visibility`
 - `Additional Attributes`
 - `Custom Attributes`
 - `Priority`
@@ -1058,6 +1062,15 @@ Campos suportados:
 - `Snoozed Until`
 - `Typing Status`
 - `Private Note`
+
+`Create` can send an optional normal first message in the conversation creation request.
+
+`Create and Send Message` is the combined flow:
+
+- `Normal` sends the message in `POST /conversations`
+- `Private` creates the conversation first and then sends a private note in `POST /conversations/{id}/messages`
+
+This first version supports one message only and does not expose advanced message payload fields such as `content_type`, `template_params`, `campaign_id`, or `content_attributes`.
 
 ## Validacao local
 
