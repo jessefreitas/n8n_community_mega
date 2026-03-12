@@ -5,9 +5,7 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 ## Recursos
 
 - `Mega` node regular para APIs do Mega com escopo de conta
-- `Mega Client` node regular para APIs Client públicas
-- `Mega Dashboard App` node regular para gerar recursos de app embutido servido pelo n8n
-- `Mega Dashboard Script` node regular para gerar scripts de dashboard injetados por URL
+- `Mega Client` node regular para APIs Client pÃºblicas
 - `Mega Platform` node regular para APIs Platform do Mega
 - `Account -> Get` operation
 - `Account -> Update` operation
@@ -31,18 +29,16 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 - `Team -> Get Many`, `Get`, `Create`, `Update`, `Delete`, `Get Agents`, `Add Agent`, `Remove Agent`, and `Update Agents` operations
 - `Webhook -> Get Many`, `Create`, `Update`, and `Delete` operations
 - `Mega API` credential with `Base URL`, `API Access Token`, and `Mega Account ID`
-- `Mega Dashboard App` credential with `Base App URL`, `Shared Secret`, and `Allowed Mega Origin`
-- `Mega Dashboard Script API` credential with `Base Script URL`, `Default Iframe URL`, and `Allowed Mega Origin`
 - `Mega Client API` credential with `Base URL` and `Inbox Identifier`
 - `Mega Platform API` credential with `Base URL` and `Platform API Access Token`
-- Teste de conexão da credencial usando `GET /api/v1/profile`
+- Teste de conexÃ£o da credencial usando `GET /api/v1/profile`
 
 ## Requisitos
 
-- Node.js 22+ é necessário para executar os comandos atuais de `build` e `lint` do `@n8n/node-cli`
+- Node.js 22+ Ã© necessÃ¡rio para executar os comandos atuais de `build` e `lint` do `@n8n/node-cli`
 - npm
 
-## Instalação
+## InstalaÃ§Ã£o
 
 ```bash
 npm install
@@ -65,8 +61,8 @@ npm install @jessefreitas/n8n-nodes-mega
 
 Crie uma credencial `Mega API` no n8n com:
 
-- `Base URL`: URL da sua instância Mega, por exemplo `https://app.example.com`
-- `API Access Token`: token da aplicação enviado no header `api_access_token`
+- `Base URL`: URL da sua instÃ¢ncia Mega, por exemplo `https://app.example.com`
+- `API Access Token`: token da aplicaÃ§Ã£o enviado no header `api_access_token`
 - `Mega Account ID`: identificador externo da conta Mega usado em endpoints com escopo de conta
 
 O teste da credencial chama `GET /api/v1/profile` para validar o token.
@@ -81,7 +77,7 @@ Use o node `Mega Platform` com a credencial `Mega Platform API` para endpoints d
 
 Crie uma credencial `Mega Platform API` no n8n com:
 
-- `Base URL`: URL da sua instância Mega
+- `Base URL`: URL da sua instÃ¢ncia Mega
 - `Platform API Access Token`: token do app platform enviado no header `api_access_token`
 
 O teste da credencial chama:
@@ -99,13 +95,13 @@ Recursos suportados em `Mega Platform`:
 
 Importante:
 
-- `Mega` and `Mega Platform` não compartilham credenciais
-- `Mega` é para APIs de aplicação com escopo de conta em `/api/v1/accounts/*`
-- `Mega Platform` é para APIs Platform em `/platform/api/v1/*`
+- `Mega` and `Mega Platform` nÃ£o compartilham credenciais
+- `Mega` Ã© para APIs de aplicaÃ§Ã£o com escopo de conta em `/api/v1/accounts/*`
+- `Mega Platform` Ã© para APIs Platform em `/platform/api/v1/*`
 
 ## API Client
 
-Use o node `Mega Client` com a credencial `Mega Client API` para endpoints públicos client em:
+Use o node `Mega Client` com a credencial `Mega Client API` para endpoints pÃºblicos client em:
 
 ```text
 /public/api/v1/*
@@ -113,8 +109,8 @@ Use o node `Mega Client` com a credencial `Mega Client API` para endpoints públ
 
 Crie uma credencial `Mega Client API` no n8n com:
 
-- `Base URL`: URL da sua instância Mega
-- `Inbox Identifier`: identificador público da caixa de entrada usado pelas APIs Client
+- `Base URL`: URL da sua instÃ¢ncia Mega
+- `Inbox Identifier`: identificador pÃºblico da caixa de entrada usado pelas APIs Client
 
 Recursos suportados em `Mega Client`:
 
@@ -125,63 +121,16 @@ Recursos suportados em `Mega Client`:
 
 Importante:
 
-- `Mega`, `Mega Platform`, and `Mega Client` não compartilham credenciais
-- `Mega Client` usa identificadores públicos como `inbox_identifier`, `contact_identifier`, and `conversation_id`
-- `CSAT Survey` usa uma rota pública `conversation_uuid` fora do padrão `/public/api/v1/inboxes/*`
+- `Mega`, `Mega Platform`, and `Mega Client` nÃ£o compartilham credenciais
+- `Mega Client` usa identificadores pÃºblicos como `inbox_identifier`, `contact_identifier`, and `conversation_id`
+- `CSAT Survey` usa uma rota pÃºblica `conversation_uuid` fora do padrÃ£o `/public/api/v1/inboxes/*`
 
-## Mega Dashboard App
 
-Use o node `Mega Dashboard App` com a credencial `Mega Dashboard App` para gerar os recursos necessários para um app embutido dentro do dashboard do Mega.
-
-Crie uma credencial `Mega Dashboard App` no n8n com:
-
-- `Base App URL`: URL pública que servirá o app embutido
-- `Shared Secret`: segredo usado pelo app embutido ao chamar o n8n de volta
-- `Allowed Mega Origin`: origem esperada do Mega permitida para enviar contexto via `postMessage`
-- `App Name`: nome padrão opcional do app para a configuração gerada
-- `App Icon URL`: URL opcional do ícone para a configuração gerada
-
-Operações suportadas em `Mega Dashboard App`:
-
-- `Generate Config`
-- `Generate Context Bridge`
-- `Generate Embed Page`
-- `Verify Request`
-
-Importante:
-
-- `Mega Dashboard App` não grava configurações no Mega automaticamente
-- o app é registrado manualmente no Mega usando a configuração gerada
-- o app embutido deve ser servido por um webhook do n8n ou outra URL pública sob seu controle
-- injeção de script de dashboard está fora do escopo deste node
-
-## Mega Dashboard Script
-
-Use o node `Mega Dashboard Script` com a credencial `Mega Dashboard Script API` para gerar o JavaScript que o Mega carrega por URL na área de Dashboard Scripts.
-
-Crie uma credencial `Mega Dashboard Script API` no n8n com:
-
-- `Base Script URL`: URL pública que vai servir o JavaScript injetado
-- `Default Iframe URL`: URL padrão aberta dentro do painel embutido
-- `Allowed Mega Origin`: origem esperada do Mega que pode executar o script
-
-Operações suportadas em `Mega Dashboard Script`:
-
-- `Generate Config`
-- `Generate Script`
-
-Importante:
-
-- este node é para o caso em que o Mega espera um link de script para injeção
-- o script gerado adiciona um item na sidebar e abre um iframe dentro do painel do Mega
-- o script tenta manter a sidebar visível, acompanha o tema claro/escuro e pode fechar o painel ao clicar em outro item da sidebar
-- o JavaScript deve ser servido com `content-type: application/javascript`
-
-## Operações
+## OperaÃ§Ãµes
 
 ### Account -> Get
 
-Obtém detalhes da conta em:
+ObtÃ©m detalhes da conta em:
 
 ```text
 GET /api/v1/accounts/{accountId}
@@ -202,60 +151,25 @@ Suporta atualizar estes campos:
 - `Company Size`
 - `Timezone`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 PATCH /api/v1/accounts/{accountId}
 ```
 
-## Mega Dashboard App Operations
-
-O node `Mega Dashboard App` ajuda a preparar um app de dashboard servido pelo n8n e registrado manualmente no Mega.
-
-Saídas geradas:
-
-- `Generate Config`: returns app metadata, iframe URL, allowed origin, shared secret, and manual setup steps
-- `Generate Context Bridge`: returns the browser JavaScript that receives Mega context via `postMessage` and forwards actions to an n8n webhook
-- `Generate Embed Page`: returns HTML ready for an `HTTP Response` node or another public endpoint
-- `Verify Request`: validates request origin and shared secret against the credential
-
-Fluxo recomendado:
-
-1. Crie um webhook público no n8n que servirá a página embutida.
-2. Use `Generate Embed Page` para produzir o HTML retornado por esse webhook.
-3. Use `Generate Config` para coletar a URL do iframe e os valores de registro no Mega.
-4. Registre o app manualmente no Mega.
-5. Use `Verify Request` no fluxo de backend antes de processar ações sensíveis.
-
-## Mega Dashboard Script Operations
-
-O node `Mega Dashboard Script` ajuda a gerar um script injetável por URL para a área de Dashboard Scripts do Mega.
-
-Saídas geradas:
-
-- `Generate Config`: retorna a URL pública do script, um loader inline opcional, a configuração final do script e os passos manuais
-- `Generate Script`: retorna o JavaScript completo com `content_type` igual a `application/javascript; charset=utf-8`
-
-Fluxo recomendado:
-
-1. Crie um webhook público no n8n que vai responder com o JavaScript do script.
-2. Use `Generate Script` para obter o JavaScript e devolva esse conteúdo no webhook com `application/javascript`.
-3. Use `Generate Config` para obter a URL do script e o loader inline opcional.
-4. No Mega, configure o link do Dashboard Script apontando para a URL pública do script ou cole o loader inline, se necessário.
-5. Recarregue o dashboard do Mega e valide se o botão aparece na posição escolhida.
 
 ## Mega Platform Operations
 
 ### Platform Account
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Create`
 - `Get`
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 POST /platform/api/v1/accounts
@@ -276,13 +190,13 @@ Campos suportados:
 
 ### Platform Account User
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /platform/api/v1/accounts/{accountId}/account_users
@@ -298,7 +212,7 @@ Campos suportados:
 
 ### Platform Agent Bot
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -306,7 +220,7 @@ Operações suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /platform/api/v1/agent_bots
@@ -328,7 +242,7 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Platform User
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Create`
 - `Get`
@@ -336,7 +250,7 @@ Operações suportadas:
 - `Delete`
 - `Get SSO Link`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 POST /platform/api/v1/users
@@ -358,13 +272,13 @@ Campos suportados:
 
 ### Client Contact
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Create`
 - `Get`
 - `Update`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 POST /public/api/v1/inboxes/{inboxIdentifier}/contacts
@@ -386,7 +300,7 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Client Conversation
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -395,7 +309,7 @@ Operações suportadas:
 - `Toggle Typing Status`
 - `Update Last Seen`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations
@@ -415,13 +329,13 @@ Campos suportados:
 
 ### Client Message
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations/{conversationId}/messages
@@ -440,11 +354,11 @@ Campos suportados:
 
 ### Client CSAT Survey
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /survey/responses/{conversationUuid}
@@ -466,11 +380,11 @@ Available fields:
 
 - `Page`
 
-Este endpoint só está disponível em edições Enterprise do Mega com o recurso de logs de auditoria habilitado.
+Este endpoint sÃ³ estÃ¡ disponÃ­vel em ediÃ§Ãµes Enterprise do Mega com o recurso de logs de auditoria habilitado.
 
 ### Agent Bot
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -478,7 +392,7 @@ Operações suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/agent_bots
@@ -501,14 +415,14 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Agent
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/agents
@@ -527,7 +441,7 @@ Campos suportados:
 
 ### Automation Rule
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -535,7 +449,7 @@ Operações suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/automation_rules
@@ -556,11 +470,11 @@ Campos suportados:
 
 ### Campaign
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Create`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 POST /api/v1/accounts/{accountId}/campaigns
@@ -580,14 +494,14 @@ This first implementation covers only campaign creation and models `audience` as
 
 ### Canned Response
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/canned_responses
@@ -603,7 +517,7 @@ Campos suportados:
 
 ### Chat Room
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -618,7 +532,7 @@ Operações suportadas:
 - `Get Messages`
 - `Create Message`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/chat_rooms
@@ -652,7 +566,7 @@ This first implementation uses JSON payloads only. Binary avatar uploads for roo
 
 ### Custom Filter
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -660,7 +574,7 @@ Operações suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/custom_filters
@@ -679,7 +593,7 @@ Campos suportados:
 
 ### Contact
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -699,7 +613,7 @@ Operações suportadas:
 - `Set Labels`
 - `Merge`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/contacts
@@ -745,13 +659,13 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Portal
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/portals
@@ -773,11 +687,11 @@ Campos suportados:
 
 ### Portal Category
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Create`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 POST /api/v1/accounts/{accountId}/portals/{id}/categories
@@ -796,11 +710,11 @@ Campos suportados:
 
 ### Portal Article
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Create`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 POST /api/v1/accounts/{accountId}/portals/{id}/articles
@@ -822,7 +736,7 @@ Campos suportados:
 
 ### Custom Attribute
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
@@ -830,7 +744,7 @@ Operações suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/custom_attribute_definitions
@@ -854,7 +768,7 @@ Campos suportados:
 
 ### Inbox
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Get`
@@ -867,7 +781,7 @@ Operações suportadas:
 - `Remove Agent`
 - `Update Agents`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/inboxes
@@ -907,14 +821,14 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Integration
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/integrations/hooks
@@ -932,13 +846,13 @@ Campos suportados:
 
 ### Message
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/conversations/{conversationId}/messages
@@ -961,7 +875,7 @@ Campos suportados:
 
 ### Scheduled Message
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Get`
@@ -975,7 +889,7 @@ The node supports two scopes:
 - `Account`
 - `Conversation`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/scheduled_messages
@@ -1022,7 +936,7 @@ GET /api/v1/profile
 
 ### Team
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Get`
@@ -1034,7 +948,7 @@ Operações suportadas:
 - `Remove Agent`
 - `Update Agents`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/teams
@@ -1057,14 +971,14 @@ Campos suportados:
 
 ### Webhook
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/webhooks
@@ -1081,7 +995,7 @@ Campos suportados:
 
 ### Conversation
 
-Operações suportadas:
+OperaÃ§Ãµes suportadas:
 
 - `Get Counts`
 - `Get Many`
@@ -1100,7 +1014,7 @@ Operações suportadas:
 - `Get Reporting Events`
 - `Assign`
 
-O node envia requisições para:
+O node envia requisiÃ§Ãµes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/conversations/meta
@@ -1145,11 +1059,11 @@ Campos suportados:
 - `Typing Status`
 - `Private Note`
 
-## Validação local
+## ValidaÃ§Ã£o local
 
 ```bash
 npm run lint
 npm run build
 ```
 
-Se você estiver usando uma versão mais antiga do Node.js, o `@n8n/node-cli` atual pode falhar durante a validação local. Use Node.js 22+ antes de publicar ou submeter o pacote para revisão.
+Se vocÃª estiver usando uma versÃ£o mais antiga do Node.js, o `@n8n/node-cli` atual pode falhar durante a validaÃ§Ã£o local. Use Node.js 22+ antes de publicar ou submeter o pacote para revisÃ£o.

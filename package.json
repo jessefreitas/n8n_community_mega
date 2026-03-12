@@ -38,14 +38,10 @@
 		"strict": true,
 		"credentials": [
 			"dist/credentials/MegaApi.credentials.js",
-			"dist/credentials/MegaDashboardAppApi.credentials.js",
-			"dist/credentials/MegaDashboardScriptApi.credentials.js",
 			"dist/credentials/MegaClientApi.credentials.js",
 			"dist/credentials/MegaPlatformApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/MegaDashboardApp/MegaDashboardApp.node.js",
-			"dist/nodes/MegaDashboardScript/MegaDashboardScript.node.js",
 			"dist/nodes/Mega/Mega.node.js",
 			"dist/nodes/MegaClient/MegaClient.node.js",
 			"dist/nodes/MegaPlatform/MegaPlatform.node.js"
