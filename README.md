@@ -5,7 +5,7 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 ## Recursos
 
 - `Mega` node regular para APIs do Mega com escopo de conta
-- `Mega Client` node regular para APIs Client pÃºblicas
+- `Mega Client` node regular para APIs Client publicas
 - `Mega Platform` node regular para APIs Platform do Mega
 - `Account -> Get` operation
 - `Account -> Update` operation
@@ -31,14 +31,14 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 - `Mega API` credential with `Base URL`, `API Access Token`, and `Mega Account ID`
 - `Mega Client API` credential with `Base URL` and `Inbox Identifier`
 - `Mega Platform API` credential with `Base URL` and `Platform API Access Token`
-- Teste de conexÃ£o da credencial usando `GET /api/v1/profile`
+- Teste de conexao da credencial usando `GET /api/v1/profile`
 
 ## Requisitos
 
-- Node.js 22+ Ã© necessÃ¡rio para executar os comandos atuais de `build` e `lint` do `@n8n/node-cli`
+- Node.js 22+ e necessario para executar os comandos atuais de `build` e `lint` do `@n8n/node-cli`
 - npm
 
-## InstalaÃ§Ã£o
+## Instalacao
 
 ```bash
 npm install
@@ -61,8 +61,8 @@ npm install @jessefreitas/n8n-nodes-mega
 
 Crie uma credencial `Mega API` no n8n com:
 
-- `Base URL`: URL da sua instÃ¢ncia Mega, por exemplo `https://app.example.com`
-- `API Access Token`: token da aplicaÃ§Ã£o enviado no header `api_access_token`
+- `Base URL`: URL da sua instancia Mega, por exemplo `https://app.example.com`
+- `API Access Token`: token da aplicacao enviado no header `api_access_token`
 - `Mega Account ID`: identificador externo da conta Mega usado em endpoints com escopo de conta
 
 O teste da credencial chama `GET /api/v1/profile` para validar o token.
@@ -77,7 +77,7 @@ Use o node `Mega Platform` com a credencial `Mega Platform API` para endpoints d
 
 Crie uma credencial `Mega Platform API` no n8n com:
 
-- `Base URL`: URL da sua instÃ¢ncia Mega
+- `Base URL`: URL da sua instancia Mega
 - `Platform API Access Token`: token do app platform enviado no header `api_access_token`
 
 O teste da credencial chama:
@@ -95,13 +95,13 @@ Recursos suportados em `Mega Platform`:
 
 Importante:
 
-- `Mega` and `Mega Platform` nÃ£o compartilham credenciais
-- `Mega` Ã© para APIs de aplicaÃ§Ã£o com escopo de conta em `/api/v1/accounts/*`
-- `Mega Platform` Ã© para APIs Platform em `/platform/api/v1/*`
+- `Mega` and `Mega Platform` nao compartilham credenciais
+- `Mega` e para APIs de aplicacao com escopo de conta em `/api/v1/accounts/*`
+- `Mega Platform` e para APIs Platform em `/platform/api/v1/*`
 
 ## API Client
 
-Use o node `Mega Client` com a credencial `Mega Client API` para endpoints pÃºblicos client em:
+Use o node `Mega Client` com a credencial `Mega Client API` para endpoints publicos client em:
 
 ```text
 /public/api/v1/*
@@ -109,8 +109,8 @@ Use o node `Mega Client` com a credencial `Mega Client API` para endpoints pÃº
 
 Crie uma credencial `Mega Client API` no n8n com:
 
-- `Base URL`: URL da sua instÃ¢ncia Mega
-- `Inbox Identifier`: identificador pÃºblico da caixa de entrada usado pelas APIs Client
+- `Base URL`: URL da sua instancia Mega
+- `Inbox Identifier`: identificador publico da caixa de entrada usado pelas APIs Client
 
 Recursos suportados em `Mega Client`:
 
@@ -121,16 +121,16 @@ Recursos suportados em `Mega Client`:
 
 Importante:
 
-- `Mega`, `Mega Platform`, and `Mega Client` nÃ£o compartilham credenciais
-- `Mega Client` usa identificadores pÃºblicos como `inbox_identifier`, `contact_identifier`, and `conversation_id`
-- `CSAT Survey` usa uma rota pÃºblica `conversation_uuid` fora do padrÃ£o `/public/api/v1/inboxes/*`
+- `Mega`, `Mega Platform`, and `Mega Client` nao compartilham credenciais
+- `Mega Client` usa identificadores publicos como `inbox_identifier`, `contact_identifier`, and `conversation_id`
+- `CSAT Survey` usa uma rota publica `conversation_uuid` fora do padrao `/public/api/v1/inboxes/*`
 
 
-## OperaÃ§Ãµes
+## Operacoes
 
 ### Account -> Get
 
-ObtÃ©m detalhes da conta em:
+Obtem detalhes da conta em:
 
 ```text
 GET /api/v1/accounts/{accountId}
@@ -151,7 +151,7 @@ Suporta atualizar estes campos:
 - `Company Size`
 - `Timezone`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 PATCH /api/v1/accounts/{accountId}
@@ -162,14 +162,14 @@ PATCH /api/v1/accounts/{accountId}
 
 ### Platform Account
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Create`
 - `Get`
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 POST /platform/api/v1/accounts
@@ -190,13 +190,13 @@ Campos suportados:
 
 ### Platform Account User
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /platform/api/v1/accounts/{accountId}/account_users
@@ -212,7 +212,7 @@ Campos suportados:
 
 ### Platform Agent Bot
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -220,7 +220,7 @@ OperaÃ§Ãµes suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /platform/api/v1/agent_bots
@@ -242,7 +242,7 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Platform User
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Create`
 - `Get`
@@ -250,7 +250,7 @@ OperaÃ§Ãµes suportadas:
 - `Delete`
 - `Get SSO Link`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 POST /platform/api/v1/users
@@ -272,13 +272,13 @@ Campos suportados:
 
 ### Client Contact
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Create`
 - `Get`
 - `Update`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 POST /public/api/v1/inboxes/{inboxIdentifier}/contacts
@@ -300,7 +300,7 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Client Conversation
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -309,7 +309,7 @@ OperaÃ§Ãµes suportadas:
 - `Toggle Typing Status`
 - `Update Last Seen`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations
@@ -329,13 +329,13 @@ Campos suportados:
 
 ### Client Message
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /public/api/v1/inboxes/{inboxIdentifier}/contacts/{contactIdentifier}/conversations/{conversationId}/messages
@@ -354,11 +354,11 @@ Campos suportados:
 
 ### Client CSAT Survey
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /survey/responses/{conversationUuid}
@@ -380,11 +380,11 @@ Available fields:
 
 - `Page`
 
-Este endpoint sÃ³ estÃ¡ disponÃ­vel em ediÃ§Ãµes Enterprise do Mega com o recurso de logs de auditoria habilitado.
+Este endpoint s? est? dispon?vel em edi??es Enterprise do Mega com o recurso de logs de auditoria habilitado.
 
 ### Agent Bot
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -392,7 +392,7 @@ OperaÃ§Ãµes suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/agent_bots
@@ -415,14 +415,14 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Agent
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/agents
@@ -441,7 +441,7 @@ Campos suportados:
 
 ### Automation Rule
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -449,7 +449,7 @@ OperaÃ§Ãµes suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/automation_rules
@@ -470,11 +470,11 @@ Campos suportados:
 
 ### Campaign
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Create`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 POST /api/v1/accounts/{accountId}/campaigns
@@ -494,14 +494,14 @@ This first implementation covers only campaign creation and models `audience` as
 
 ### Canned Response
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/canned_responses
@@ -517,7 +517,7 @@ Campos suportados:
 
 ### Chat Room
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -532,7 +532,7 @@ OperaÃ§Ãµes suportadas:
 - `Get Messages`
 - `Create Message`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/chat_rooms
@@ -566,7 +566,7 @@ This first implementation uses JSON payloads only. Binary avatar uploads for roo
 
 ### Custom Filter
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -574,7 +574,7 @@ OperaÃ§Ãµes suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/custom_filters
@@ -593,7 +593,7 @@ Campos suportados:
 
 ### Contact
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -613,7 +613,7 @@ OperaÃ§Ãµes suportadas:
 - `Set Labels`
 - `Merge`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/contacts
@@ -659,13 +659,13 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Portal
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/portals
@@ -687,11 +687,11 @@ Campos suportados:
 
 ### Portal Category
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Create`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 POST /api/v1/accounts/{accountId}/portals/{id}/categories
@@ -710,11 +710,11 @@ Campos suportados:
 
 ### Portal Article
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Create`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 POST /api/v1/accounts/{accountId}/portals/{id}/articles
@@ -736,7 +736,7 @@ Campos suportados:
 
 ### Custom Attribute
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
@@ -744,7 +744,7 @@ OperaÃ§Ãµes suportadas:
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/custom_attribute_definitions
@@ -768,7 +768,7 @@ Campos suportados:
 
 ### Inbox
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Get`
@@ -781,7 +781,7 @@ OperaÃ§Ãµes suportadas:
 - `Remove Agent`
 - `Update Agents`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/inboxes
@@ -821,14 +821,14 @@ The documented binary `avatar` upload field is not implemented yet in this node.
 
 ### Integration
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/integrations/hooks
@@ -846,13 +846,13 @@ Campos suportados:
 
 ### Message
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/conversations/{conversationId}/messages
@@ -875,7 +875,7 @@ Campos suportados:
 
 ### Scheduled Message
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Get`
@@ -889,7 +889,7 @@ The node supports two scopes:
 - `Account`
 - `Conversation`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/scheduled_messages
@@ -936,7 +936,7 @@ GET /api/v1/profile
 
 ### Team
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Get`
@@ -948,7 +948,7 @@ OperaÃ§Ãµes suportadas:
 - `Remove Agent`
 - `Update Agents`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/teams
@@ -971,14 +971,14 @@ Campos suportados:
 
 ### Webhook
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Many`
 - `Create`
 - `Update`
 - `Delete`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/webhooks
@@ -995,7 +995,7 @@ Campos suportados:
 
 ### Conversation
 
-OperaÃ§Ãµes suportadas:
+Operacoes suportadas:
 
 - `Get Counts`
 - `Get Many`
@@ -1014,7 +1014,7 @@ OperaÃ§Ãµes suportadas:
 - `Get Reporting Events`
 - `Assign`
 
-O node envia requisiÃ§Ãµes para:
+O node envia requisicoes para:
 
 ```text
 GET /api/v1/accounts/{accountId}/conversations/meta
@@ -1059,11 +1059,11 @@ Campos suportados:
 - `Typing Status`
 - `Private Note`
 
-## ValidaÃ§Ã£o local
+## Validacao local
 
 ```bash
 npm run lint
 npm run build
 ```
 
-Se vocÃª estiver usando uma versÃ£o mais antiga do Node.js, o `@n8n/node-cli` atual pode falhar durante a validaÃ§Ã£o local. Use Node.js 22+ antes de publicar ou submeter o pacote para revisÃ£o.
+Se voce estiver usando uma versao mais antiga do Node.js, o `@n8n/node-cli` atual pode falhar durante a validacao local. Use Node.js 22+ antes de publicar ou submeter o pacote para revisao.
