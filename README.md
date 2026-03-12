@@ -11,7 +11,7 @@ Community node for [n8n](https://n8n.io) that creates conversations in Mega thro
 
 ## Requirements
 
-- Node.js 22+ is recommended by the current n8n node toolchain
+- Node.js 22+ is required to run the current `@n8n/node-cli` build and lint commands
 - npm
 
 ## Installation
@@ -30,7 +30,7 @@ npm run dev
 To install the published package into n8n:
 
 ```bash
-npm install n8n-nodes-mega
+npm install @jessefreitas/n8n-nodes-mega
 ```
 
 ## Credentials
@@ -74,4 +74,4 @@ npm run lint
 npm run build
 ```
 
-If you are using an older Node.js release, the current `@n8n/node-cli` may warn or fail. Upgrade to Node.js 22+ before publishing.
+If you are using an older Node.js release, the current `@n8n/node-cli` can fail during local validation. Use Node.js 22+ before publishing or submitting the package for review.

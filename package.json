@@ -1,5 +1,5 @@
 {
-	"name": "n8n-nodes-mega",
+	"name": "@jessefreitas/n8n-nodes-mega",
 	"version": "0.1.0",
 	"description": "n8n community node for creating Mega conversations via the Chatwoot-compatible API",
 	"license": "MIT",
@@ -17,6 +17,9 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jessefreitas/n8n_community_mega.git"
+	},
+	"engines": {
+		"node": ">=22"
 	},
 	"scripts": {
 		"build": "n8n-node build",
@@ -41,7 +44,7 @@
 		]
 	},
 	"devDependencies": {
-		"@n8n/node-cli": "*",
+		"@n8n/node-cli": "0.23.0",
 		"eslint": "9.32.0",
 		"prettier": "3.6.2",
 		"release-it": "^19.0.4",
