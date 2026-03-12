@@ -4,10 +4,10 @@ Node de comunidade para [n8n](https://n8n.io) para trabalhar com a API do Mega.
 
 ## Recursos
 
-- `Mega` node regular para APIs compatíveis com Chatwoot com escopo de conta
+- `Mega` node regular para APIs do Mega com escopo de conta
 - `Mega Client` node regular para APIs Client públicas
 - `Mega Dashboard App` node regular para gerar recursos de app embutido servido pelo n8n
-- `Mega Platform` node regular para APIs Platform do Chatwoot
+- `Mega Platform` node regular para APIs Platform do Mega
 - `Account -> Get` operation
 - `Account -> Update` operation
 - `Agent -> Get Many`, `Create`, `Update`, and `Delete` operations
@@ -63,9 +63,9 @@ npm install @jessefreitas/n8n-nodes-mega
 
 Crie uma credencial `Mega API` no n8n com:
 
-- `Base URL`: URL da sua instância Mega ou Chatwoot, por exemplo `https://app.example.com`
+- `Base URL`: URL da sua instância Mega, por exemplo `https://app.example.com`
 - `API Access Token`: token da aplicação enviado no header `api_access_token`
-- `Mega Account ID`: identificador externo da conta Chatwoot usado em endpoints com escopo de conta
+- `Mega Account ID`: identificador externo da conta Mega usado em endpoints com escopo de conta
 
 O teste da credencial chama `GET /api/v1/profile` para validar o token.
 
@@ -79,7 +79,7 @@ Use o node `Mega Platform` com a credencial `Mega Platform API` para endpoints d
 
 Crie uma credencial `Mega Platform API` no n8n com:
 
-- `Base URL`: your Mega or Chatwoot instance URL
+- `Base URL`: URL da sua instância Mega
 - `Platform API Access Token`: token do app platform enviado no header `api_access_token`
 
 O teste da credencial chama:
@@ -111,7 +111,7 @@ Use o node `Mega Client` com a credencial `Mega Client API` para endpoints públ
 
 Crie uma credencial `Mega Client API` no n8n com:
 
-- `Base URL`: your Mega or Chatwoot instance URL
+- `Base URL`: URL da sua instância Mega
 - `Inbox Identifier`: identificador público da caixa de entrada usado pelas APIs Client
 
 Recursos suportados em `Mega Client`:
@@ -425,7 +425,7 @@ Available fields:
 
 - `Page`
 
-This endpoint is only available in Chatwoot Enterprise editions with the audit logs feature enabled.
+Este endpoint só está disponível em edições Enterprise do Mega com o recurso de logs de auditoria habilitado.
 
 ### Agent Bot
 

@@ -714,7 +714,7 @@ const agentBotCreateProperties: INodeProperties[] = [
 			numberPrecision: 0,
 		},
 		default: 0,
-		description: 'Bot type. Chatwoot documents 0 for webhook bots.',
+		description: 'Bot type. API documentation uses 0 for webhook bots.',
 		displayOptions: {
 			show: {
 				resource: ['agentBot'],
@@ -781,7 +781,7 @@ const agentBotUpdateProperties: INodeProperties[] = [
 							numberPrecision: 0,
 						},
 						default: 0,
-						description: 'Bot type. Chatwoot documents 0 for webhook bots.',
+						description: 'Bot type. API documentation uses 0 for webhook bots.',
 					},
 					{
 						displayName: 'Description',

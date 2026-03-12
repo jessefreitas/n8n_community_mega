@@ -17,7 +17,7 @@ export class MegaClientApi implements ICredentialType {
 			default: '',
 			placeholder: 'https://app.example.com',
 			required: true,
-			description: 'URL base da instância Mega ou Chatwoot',
+			description: 'URL base da instância Mega',
 		},
 		{
 			displayName: 'Inbox Identifier',

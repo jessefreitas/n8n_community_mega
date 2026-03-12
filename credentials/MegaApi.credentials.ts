@@ -23,7 +23,7 @@ export class MegaApi implements ICredentialType {
 			default: '',
 			placeholder: 'https://app.example.com',
 			required: true,
-			description: 'URL base da instância Mega ou Chatwoot',
+			description: 'URL base da instância Mega',
 		},
 		{
 			displayName: 'API Access Token',
@@ -40,7 +40,7 @@ export class MegaApi implements ICredentialType {
 			type: 'string',
 			default: '',
 			required: true,
-			description: 'Identificador externo da conta Chatwoot usado nas rotas com escopo de conta',
+			description: 'Identificador externo da conta Mega usado nas rotas com escopo de conta',
 		},
 	];
 
