@@ -188,9 +188,11 @@ const conversationIdProperty: INodeProperties = {
 				'assign',
 				'get',
 				'getLabels',
+				'getParticipants',
 				'getReportingEvents',
 				'setCustomAttributes',
 				'setLabels',
+				'setParticipants',
 				'togglePriority',
 				'toggleStatus',
 				'toggleTypingStatus',
@@ -455,6 +457,21 @@ const conversationLabelsProperty: INodeProperties = {
 		show: {
 			resource: ['conversation'],
 			operation: ['setLabels'],
+		},
+	},
+};
+
+const conversationParticipantsProperty: INodeProperties = {
+	displayName: 'User IDs',
+	name: 'conversationParticipantUserIds',
+	type: 'json',
+	default: '[]',
+	required: true,
+	description: 'JSON array with the final participant user IDs for the conversation',
+	displayOptions: {
+		show: {
+			resource: ['conversation'],
+			operation: ['setParticipants'],
 		},
 	},
 };
@@ -1040,6 +1057,268 @@ const cannedResponseUpdateProperties: INodeProperties[] = [
 	},
 ];
 
+const campaignCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Title',
+		name: 'campaignTitle',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Title of the campaign',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Message',
+		name: 'campaignMessage',
+		type: 'string',
+		typeOptions: {
+			rows: 4,
+		},
+		default: '',
+		required: true,
+		description: 'Message content of the campaign',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Inbox ID',
+		name: 'campaignInboxId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		required: true,
+		description: 'Inbox ID targeted by the campaign',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Scheduled At',
+		name: 'campaignScheduledAt',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'ISO 8601 UTC date and time when the campaign should run',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Trigger Only During Business Hours',
+		name: 'campaignTriggerOnlyDuringBusinessHours',
+		type: 'boolean',
+		default: false,
+		description: 'Whether the campaign should trigger only during business hours',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Template Params',
+		name: 'campaignTemplateParams',
+		type: 'json',
+		default: '{}',
+		description: 'Optional template parameters object for campaign delivery rules',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Audience Labels',
+		name: 'campaignAudienceLabels',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Label',
+		typeOptions: {
+			multipleValues: true,
+		},
+		required: true,
+		description: 'Labels used to build the campaign audience',
+		displayOptions: {
+			show: {
+				resource: ['campaign'],
+				operation: ['create'],
+			},
+		},
+		options: [
+			{
+				name: 'labels',
+				displayName: 'Labels',
+				values: [
+					{
+						displayName: 'Label ID',
+						name: 'labelId',
+						type: 'number',
+						typeOptions: {
+							numberPrecision: 0,
+						},
+						default: 0,
+						required: true,
+						description: 'ID of the label included in the audience',
+					},
+				],
+			},
+		],
+	},
+];
+
+const customFilterIdProperty: INodeProperties = {
+	displayName: 'Custom Filter ID',
+	name: 'customFilterId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the custom filter',
+	displayOptions: {
+		show: {
+			resource: ['customFilter'],
+			operation: ['delete', 'get', 'update'],
+		},
+	},
+};
+
+const customFilterTypeOptions: INodePropertyOptions[] = [
+	{ name: 'Contact', value: 'contact' },
+	{ name: 'Conversation', value: 'conversation' },
+	{ name: 'Report', value: 'report' },
+];
+
+const customFilterListProperty: INodeProperties = {
+	displayName: 'Filter Type',
+	name: 'customFilterListType',
+	type: 'options',
+	options: customFilterTypeOptions,
+	default: 'conversation',
+	description: 'Type of custom filter to list',
+	displayOptions: {
+		show: {
+			resource: ['customFilter'],
+			operation: ['getMany'],
+		},
+	},
+};
+
+const customFilterCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Name',
+		name: 'customFilterName',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Name of the custom filter',
+		displayOptions: {
+			show: {
+				resource: ['customFilter'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Type',
+		name: 'customFilterType',
+		type: 'options',
+		options: customFilterTypeOptions,
+		default: 'conversation',
+		description: 'Type of the custom filter',
+		displayOptions: {
+			show: {
+				resource: ['customFilter'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Query',
+		name: 'customFilterQuery',
+		type: 'json',
+		default: '{}',
+		required: true,
+		description: 'Query object saved as the custom filter',
+		displayOptions: {
+			show: {
+				resource: ['customFilter'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
+const customFilterUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'customFilterUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the custom filter',
+		displayOptions: {
+			show: {
+				resource: ['customFilter'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'Name of the custom filter',
+					},
+					{
+						displayName: 'Query',
+						name: 'query',
+						type: 'json',
+						default: '{}',
+						description: 'Query object saved as the custom filter',
+					},
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: customFilterTypeOptions,
+						default: 'conversation',
+						description: 'Type of the custom filter',
+					},
+				],
+			},
+		],
+	},
+];
+
 const customAttributeIdProperty: INodeProperties = {
 	displayName: 'Custom Attribute ID',
 	name: 'customAttributeId',
@@ -1198,6 +1477,131 @@ const customAttributeBaseFields: INodeProperties[] = [
 	},
 ];
 
+const webhookIdProperty: INodeProperties = {
+	displayName: 'Webhook ID',
+	name: 'webhookId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the webhook',
+	displayOptions: {
+		show: {
+			resource: ['webhook'],
+			operation: ['delete', 'update'],
+		},
+	},
+};
+
+const webhookSubscriptionOptions: INodePropertyOptions[] = [
+	{ name: 'Contact Created', value: 'contact_created' },
+	{ name: 'Contact Updated', value: 'contact_updated' },
+	{ name: 'Conversation Created', value: 'conversation_created' },
+	{ name: 'Conversation Status Changed', value: 'conversation_status_changed' },
+	{ name: 'Conversation Updated', value: 'conversation_updated' },
+	{ name: 'Message Created', value: 'message_created' },
+	{ name: 'Message Updated', value: 'message_updated' },
+	{ name: 'Web Widget Triggered', value: 'webwidget_triggered' },
+];
+
+const webhookCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Name',
+		name: 'webhookName',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Name of the webhook',
+		displayOptions: {
+			show: {
+				resource: ['webhook'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'URL',
+		name: 'webhookUrl',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'URL where events should be sent',
+		displayOptions: {
+			show: {
+				resource: ['webhook'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Subscriptions',
+		name: 'webhookSubscriptions',
+		type: 'multiOptions',
+		options: webhookSubscriptionOptions,
+		default: [],
+		required: true,
+		description: 'Events to subscribe to',
+		displayOptions: {
+			show: {
+				resource: ['webhook'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
+const webhookUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'webhookUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the webhook',
+		displayOptions: {
+			show: {
+				resource: ['webhook'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'Name of the webhook',
+					},
+					{
+						displayName: 'Subscriptions',
+						name: 'subscriptions',
+						type: 'multiOptions',
+						options: webhookSubscriptionOptions,
+						default: [],
+						description: 'Events to subscribe to',
+					},
+					{
+						displayName: 'URL',
+						name: 'url',
+						type: 'string',
+						default: '',
+						description: 'URL where events should be sent',
+					},
+				],
+			},
+		],
+	},
+];
+
 const customAttributeUpdateProperties: INodeProperties[] = [
 	{
 		displayName: 'Update Fields',
@@ -1305,8 +1709,10 @@ const contactIdProperty: INodeProperties = {
 		show: {
 			resource: ['contact'],
 			operation: [
+				'createNote',
 				'createInbox',
 				'delete',
+				'deleteNote',
 				'get',
 				'getContactableInboxes',
 				'getConversations',
@@ -1680,6 +2086,42 @@ const contactLabelsProperty: INodeProperties = {
 		show: {
 			resource: ['contact'],
 			operation: ['setLabels'],
+		},
+	},
+};
+
+const contactNoteIdProperty: INodeProperties = {
+	displayName: 'Note ID',
+	name: 'contactNoteId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the note',
+	displayOptions: {
+		show: {
+			resource: ['contact'],
+			operation: ['deleteNote'],
+		},
+	},
+};
+
+const contactNoteProperty: INodeProperties = {
+	displayName: 'Content',
+	name: 'contactNoteContent',
+	type: 'string',
+	typeOptions: {
+		rows: 4,
+	},
+	default: '',
+	required: true,
+	description: 'Content of the note',
+	displayOptions: {
+		show: {
+			resource: ['contact'],
+			operation: ['createNote'],
 		},
 	},
 };
@@ -2760,6 +3202,591 @@ const messageCreateProperties: INodeProperties[] = [
 	},
 ];
 
+const chatRoomIdProperty: INodeProperties = {
+	displayName: 'Chat Room ID',
+	name: 'chatRoomId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the chat room',
+	displayOptions: {
+		show: {
+			resource: ['chatRoom'],
+			operation: [
+				'addMembers',
+				'delete',
+				'get',
+				'getMembers',
+				'getMessages',
+				'markAsRead',
+				'removeMembers',
+				'update',
+				'updateMembers',
+				'createMessage',
+			],
+		},
+	},
+};
+
+const chatRoomCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Name',
+		name: 'chatRoomName',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Name of the chat room',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Description',
+		name: 'chatRoomDescription',
+		type: 'string',
+		typeOptions: {
+			rows: 3,
+		},
+		default: '',
+		description: 'Description of the chat room',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
+const chatRoomUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'chatRoomUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the chat room',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Description',
+						name: 'description',
+						type: 'string',
+						typeOptions: {
+							rows: 3,
+						},
+						default: '',
+						description: 'Description of the chat room',
+					},
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'Name of the chat room',
+					},
+				],
+			},
+		],
+	},
+];
+
+const chatRoomUserIdsProperty: INodeProperties = {
+	displayName: 'User IDs',
+	name: 'chatRoomUserIds',
+	type: 'json',
+	default: '[]',
+	required: true,
+	description: 'JSON array of user IDs',
+	displayOptions: {
+		show: {
+			resource: ['chatRoom'],
+			operation: ['addMembers', 'removeMembers', 'updateMembers'],
+		},
+	},
+};
+
+const chatRoomMessageListProperties: INodeProperties[] = [
+	{
+		displayName: 'Page',
+		name: 'chatRoomMessagePage',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 1,
+		description: 'Page number for pagination',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['getMessages'],
+			},
+		},
+	},
+	{
+		displayName: 'Per Page',
+		name: 'chatRoomMessagePerPage',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 20,
+		description: 'Number of messages per page, up to 50',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['getMessages'],
+			},
+		},
+	},
+];
+
+const chatRoomMessageTypeOptions: INodePropertyOptions[] = [
+	{ name: 'Incoming', value: 'incoming' },
+	{ name: 'Outgoing', value: 'outgoing' },
+];
+
+const chatRoomMessageCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Content',
+		name: 'chatRoomMessageContent',
+		type: 'string',
+		typeOptions: {
+			rows: 4,
+		},
+		default: '',
+		required: true,
+		description: 'Content of the chat room message',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['createMessage'],
+			},
+		},
+	},
+	{
+		displayName: 'Message Type',
+		name: 'chatRoomMessageType',
+		type: 'options',
+		options: chatRoomMessageTypeOptions,
+		default: 'outgoing',
+		description: 'Type of the chat room message',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['createMessage'],
+			},
+		},
+	},
+	{
+		displayName: 'Echo ID',
+		name: 'chatRoomMessageEchoId',
+		type: 'string',
+		default: '',
+		description: 'Optional temporary identifier for message synchronization',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['createMessage'],
+			},
+		},
+	},
+	{
+		displayName: 'Content Attributes',
+		name: 'chatRoomMessageContentAttributes',
+		type: 'json',
+		default: '{}',
+		description: 'Optional content attributes, for example in-reply-to metadata',
+		displayOptions: {
+			show: {
+				resource: ['chatRoom'],
+				operation: ['createMessage'],
+			},
+		},
+	},
+];
+
+const scheduledMessageScopeProperty: INodeProperties = {
+	displayName: 'Scope',
+	name: 'scheduledMessageScope',
+	type: 'options',
+	options: [
+		{ name: 'Account', value: 'account' },
+		{ name: 'Conversation', value: 'conversation' },
+	],
+	default: 'account',
+	description: 'Whether to work with account-level or conversation-level scheduled messages',
+	displayOptions: {
+		show: {
+			resource: ['scheduledMessage'],
+		},
+	},
+};
+
+const scheduledMessageConversationIdProperty: INodeProperties = {
+	displayName: 'Conversation ID',
+	name: 'scheduledMessageConversationId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the conversation',
+	displayOptions: {
+		show: {
+			resource: ['scheduledMessage'],
+			scheduledMessageScope: ['conversation'],
+			operation: ['count', 'create', 'delete', 'get', 'getMany', 'update'],
+		},
+	},
+};
+
+const scheduledMessageIdProperty: INodeProperties = {
+	displayName: 'Scheduled Message ID',
+	name: 'scheduledMessageId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the scheduled message',
+	displayOptions: {
+		show: {
+			resource: ['scheduledMessage'],
+			operation: ['delete', 'get', 'update'],
+		},
+	},
+};
+
+const scheduledMessageStatusOptions: INodePropertyOptions[] = [
+	{ name: 'All', value: 'all' },
+	{ name: 'Failed', value: 'failed' },
+	{ name: 'Pending', value: 'pending' },
+	{ name: 'Sent', value: 'sent' },
+];
+
+const scheduledMessageRecurrenceTypeOptions: INodePropertyOptions[] = [
+	{ name: 'None', value: 'none' },
+	{ name: 'Daily', value: 'daily' },
+	{ name: 'Weekly', value: 'weekly' },
+	{ name: 'Monthly', value: 'monthly' },
+	{ name: 'Yearly', value: 'yearly' },
+];
+
+const scheduledMessageRecurrenceEndTypeOptions: INodePropertyOptions[] = [
+	{ name: 'Never', value: 'never' },
+	{ name: 'On Date', value: 'on_date' },
+	{ name: 'After Occurrences', value: 'after_occurrences' },
+];
+
+const scheduledMessageListProperties: INodeProperties[] = [
+	{
+		displayName: 'Status',
+		name: 'scheduledMessageCountStatus',
+		type: 'options',
+		options: scheduledMessageStatusOptions,
+		default: 'all',
+		description: 'Filter count by status',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				scheduledMessageScope: ['conversation'],
+				operation: ['count'],
+			},
+		},
+	},
+];
+
+const scheduledMessageBaseFields: INodeProperties[] = [
+	{
+		displayName: 'Inbox ID',
+		name: 'scheduledMessageInboxId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Inbox ID associated with the scheduled message',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Contact ID',
+		name: 'scheduledMessageContactId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Contact ID for account-level scheduled messages',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				scheduledMessageScope: ['account'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Conversation ID',
+		name: 'scheduledMessageCreateConversationId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Optional conversation ID for account-level scheduled messages',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				scheduledMessageScope: ['account'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Content',
+		name: 'scheduledMessageContent',
+		type: 'string',
+		typeOptions: {
+			rows: 4,
+		},
+		default: '',
+		required: true,
+		description: 'Content of the scheduled message',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Scheduled At',
+		name: 'scheduledMessageScheduledAt',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'ISO 8601 UTC date and time when the message should be sent',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Title',
+		name: 'scheduledMessageTitle',
+		type: 'string',
+		default: '',
+		description: 'Optional title for the scheduled message',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Template Params',
+		name: 'scheduledMessageTemplateParams',
+		type: 'json',
+		default: '{}',
+		description: 'Optional template parameters object, for example WhatsApp template data',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Recurrence Type',
+		name: 'scheduledMessageRecurrenceType',
+		type: 'options',
+		options: scheduledMessageRecurrenceTypeOptions,
+		default: 'none',
+		description: 'Recurrence frequency for the scheduled message',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Recurrence Interval',
+		name: 'scheduledMessageRecurrenceInterval',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 1,
+		description: 'Repeat every N periods',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+				scheduledMessageRecurrenceType: ['daily', 'monthly', 'weekly', 'yearly'],
+			},
+		},
+	},
+	{
+		displayName: 'Recurrence Days',
+		name: 'scheduledMessageRecurrenceDays',
+		type: 'json',
+		default: '[]',
+		description: 'JSON array of weekday numbers, from 0 Sunday to 6 Saturday',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+				scheduledMessageRecurrenceType: ['weekly'],
+			},
+		},
+	},
+	{
+		displayName: 'Recurrence End Type',
+		name: 'scheduledMessageRecurrenceEndType',
+		type: 'options',
+		options: scheduledMessageRecurrenceEndTypeOptions,
+		default: 'never',
+		description: 'How the recurrence should stop',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+				scheduledMessageRecurrenceType: ['daily', 'monthly', 'weekly', 'yearly'],
+			},
+		},
+	},
+	{
+		displayName: 'Recurrence End Date',
+		name: 'scheduledMessageRecurrenceEndDate',
+		type: 'string',
+		default: '',
+		description: 'ISO 8601 date when recurrence should stop',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+				scheduledMessageRecurrenceEndType: ['on_date'],
+			},
+		},
+	},
+	{
+		displayName: 'Recurrence Max Occurrences',
+		name: 'scheduledMessageRecurrenceMaxOccurrences',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Maximum number of generated occurrences',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['create'],
+				scheduledMessageRecurrenceEndType: ['after_occurrences'],
+			},
+		},
+	},
+];
+
+const scheduledMessageUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'scheduledMessageUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the scheduled message',
+		displayOptions: {
+			show: {
+				resource: ['scheduledMessage'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Content',
+						name: 'content',
+						type: 'string',
+						typeOptions: {
+							rows: 4,
+						},
+						default: '',
+						description: 'Content of the scheduled message',
+					},
+					{
+						displayName: 'Inbox ID',
+						name: 'inboxId',
+						type: 'number',
+						typeOptions: {
+							numberPrecision: 0,
+						},
+						default: 0,
+						description: 'Inbox ID associated with the scheduled message',
+					},
+					{
+						displayName: 'Scheduled At',
+						name: 'scheduledAt',
+						type: 'string',
+						default: '',
+						description: 'ISO 8601 UTC date and time when the message should be sent',
+					},
+					{
+						displayName: 'Template Params',
+						name: 'templateParams',
+						type: 'json',
+						default: '{}',
+						description: 'Template parameters object, for example WhatsApp template data',
+					},
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
+						description: 'Title of the scheduled message',
+					},
+				],
+			},
+		],
+	},
+];
+
 export class Mega implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Mega',
@@ -2809,8 +3836,16 @@ export class Mega implements INodeType {
 						value: 'automationRule',
 					},
 					{
+						name: 'Campaign',
+						value: 'campaign',
+					},
+					{
 						name: 'Canned Response',
 						value: 'cannedResponse',
+					},
+					{
+						name: 'Chat Room',
+						value: 'chatRoom',
 					},
 					{
 						name: 'Contact',
@@ -2823,6 +3858,10 @@ export class Mega implements INodeType {
 					{
 						name: 'Custom Attribute',
 						value: 'customAttribute',
+					},
+					{
+						name: 'Custom Filter',
+						value: 'customFilter',
 					},
 					{
 						name: 'Inbox',
@@ -2841,11 +3880,175 @@ export class Mega implements INodeType {
 						value: 'profile',
 					},
 					{
+						name: 'Scheduled Message',
+						value: 'scheduledMessage',
+					},
+					{
 						name: 'Team',
 						value: 'team',
 					},
+					{
+						name: 'Webhook',
+						value: 'webhook',
+					},
 				],
 				default: 'conversation',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a campaign',
+						action: 'Create a campaign',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['campaign'],
+					},
+				},
+				default: 'create',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Count',
+						value: 'count',
+						description: 'Count scheduled messages in a conversation',
+						action: 'Count scheduled messages in a conversation',
+					},
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a scheduled message',
+						action: 'Create a scheduled message',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a scheduled message',
+						action: 'Delete a scheduled message',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get scheduled message details',
+						action: 'Get scheduled message details',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List scheduled messages',
+						action: 'List scheduled messages',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a scheduled message',
+						action: 'Update a scheduled message',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['scheduledMessage'],
+					},
+				},
+				default: 'getMany',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Add Members',
+						value: 'addMembers',
+						description: 'Add members to a chat room',
+						action: 'Add members to a chat room',
+					},
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a chat room',
+						action: 'Create a chat room',
+					},
+					{
+						name: 'Create Message',
+						value: 'createMessage',
+						description: 'Create a message in a chat room',
+						action: 'Create a message in a chat room',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a chat room',
+						action: 'Delete a chat room',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get chat room details',
+						action: 'Get chat room details',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List chat rooms',
+						action: 'List chat rooms',
+					},
+					{
+						name: 'Get Members',
+						value: 'getMembers',
+						description: 'List members in a chat room',
+						action: 'List members in a chat room',
+					},
+					{
+						name: 'Get Messages',
+						value: 'getMessages',
+						description: 'List messages in a chat room',
+						action: 'List messages in a chat room',
+					},
+					{
+						name: 'Mark As Read',
+						value: 'markAsRead',
+						description: 'Mark a chat room as read',
+						action: 'Mark a chat room as read',
+					},
+					{
+						name: 'Remove Members',
+						value: 'removeMembers',
+						description: 'Remove members from a chat room',
+						action: 'Remove members from a chat room',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a chat room',
+						action: 'Update a chat room',
+					},
+					{
+						name: 'Update Members',
+						value: 'updateMembers',
+						description: 'Overwrite members in a chat room',
+						action: 'Overwrite members in a chat room',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['chatRoom'],
+					},
+				},
+				default: 'getMany',
 			},
 			{
 				displayName: 'Operation',
@@ -2926,6 +4129,50 @@ export class Mega implements INodeType {
 					{
 						name: 'Create',
 						value: 'create',
+						description: 'Create a custom filter',
+						action: 'Create a custom filter',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a custom filter',
+						action: 'Delete a custom filter',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get custom filter details',
+						action: 'Get custom filter details',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List custom filters',
+						action: 'List custom filters',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a custom filter',
+						action: 'Update a custom filter',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['customFilter'],
+					},
+				},
+				default: 'getMany',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
 						description: 'Add a new agent',
 						action: 'Add a new agent',
 					},
@@ -2974,10 +4221,22 @@ export class Mega implements INodeType {
 						action: 'Create a contact inbox record',
 					},
 					{
+						name: 'Create Note',
+						value: 'createNote',
+						description: 'Create a note on a contact',
+						action: 'Create a note on a contact',
+					},
+					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a contact',
 						action: 'Delete a contact',
+					},
+					{
+						name: 'Delete Note',
+						value: 'deleteNote',
+						description: 'Delete a note from a contact',
+						action: 'Delete a note from a contact',
 					},
 					{
 						name: 'Filter',
@@ -3242,6 +4501,12 @@ export class Mega implements INodeType {
 						action: 'List conversations',
 					},
 					{
+						name: 'Get Participants',
+						value: 'getParticipants',
+						description: 'List participants of a conversation',
+						action: 'List participants of a conversation',
+					},
+					{
 						name: 'Get Reporting Events',
 						value: 'getReportingEvents',
 						description: 'List reporting events of a conversation',
@@ -3258,6 +4523,12 @@ export class Mega implements INodeType {
 						value: 'setLabels',
 						description: 'Overwrite labels of a conversation',
 						action: 'Overwrite labels of a conversation',
+					},
+					{
+						name: 'Set Participants',
+						value: 'setParticipants',
+						description: 'Overwrite participants of a conversation',
+						action: 'Overwrite participants of a conversation',
 					},
 					{
 						name: 'Toggle Priority',
@@ -3523,10 +4794,49 @@ export class Mega implements INodeType {
 				},
 				default: 'getMany',
 			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Add a webhook',
+						action: 'Add a webhook',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a webhook',
+						action: 'Delete a webhook',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List all webhooks',
+						action: 'List all webhooks',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a webhook object',
+						action: 'Update a webhook object',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['webhook'],
+					},
+				},
+				default: 'getMany',
+			},
 			...accountUpdateProperties,
 			automationRuleIdProperty,
 			...automationRuleCreateProperties,
 			...automationRuleUpdateProperties,
+			...campaignCreateProperties,
 			agentIdProperty,
 			...agentCreateProperties,
 			...agentUpdateProperties,
@@ -3536,6 +4846,16 @@ export class Mega implements INodeType {
 			cannedResponseIdProperty,
 			...cannedResponseCreateProperties,
 			...cannedResponseUpdateProperties,
+			chatRoomIdProperty,
+			...chatRoomCreateProperties,
+			...chatRoomUpdateProperties,
+			chatRoomUserIdsProperty,
+			...chatRoomMessageListProperties,
+			...chatRoomMessageCreateProperties,
+			customFilterIdProperty,
+			customFilterListProperty,
+			...customFilterCreateProperties,
+			...customFilterUpdateProperties,
 			contactIdProperty,
 			...contactBaseCreateFields,
 			...contactUpdateProperties,
@@ -3543,6 +4863,8 @@ export class Mega implements INodeType {
 			contactSearchProperty,
 			contactFilterProperty,
 			contactLabelsProperty,
+			contactNoteIdProperty,
+			contactNoteProperty,
 			...contactCreateInboxProperties,
 			...contactMergeProperties,
 			customAttributeIdProperty,
@@ -3565,6 +4887,15 @@ export class Mega implements INodeType {
 			messageIdProperty,
 			...messageListProperties,
 			...messageCreateProperties,
+			scheduledMessageScopeProperty,
+			scheduledMessageConversationIdProperty,
+			scheduledMessageIdProperty,
+			...scheduledMessageListProperties,
+			...scheduledMessageBaseFields,
+			...scheduledMessageUpdateProperties,
+			webhookIdProperty,
+			...webhookCreateProperties,
+			...webhookUpdateProperties,
 			...auditLogGetManyProperties,
 			conversationIdProperty,
 			...conversationListProperties,
@@ -3576,6 +4907,7 @@ export class Mega implements INodeType {
 			...conversationTypingProperties,
 			conversationCustomAttributesProperty,
 			conversationLabelsProperty,
+			conversationParticipantsProperty,
 			...conversationAssignmentProperties,
 		],
 	};
@@ -3725,6 +5057,68 @@ export class Mega implements INodeType {
 						`/api/v1/accounts/${accountId}/integrations/hooks/${hookId}`,
 					);
 					response = { success: true, id: hookId };
+				} else if (resource === 'customFilter' && operation === 'getMany') {
+					const filterType = this.getNodeParameter(
+						'customFilterListType',
+						itemIndex,
+						'conversation',
+					) as string;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/custom_filters`,
+						undefined,
+						{ filter_type: filterType },
+					)) as IDataObject;
+				} else if (resource === 'customFilter' && operation === 'get') {
+					const customFilterId = this.getNodeParameter('customFilterId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/custom_filters/${customFilterId}`,
+					)) as IDataObject;
+				} else if (resource === 'customFilter' && operation === 'create') {
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/custom_filters`,
+						{
+							name: this.getNodeParameter('customFilterName', itemIndex) as string,
+							type: this.getNodeParameter('customFilterType', itemIndex) as string,
+							query: this.getNodeParameter('customFilterQuery', itemIndex, {}) as IDataObject,
+						},
+					)) as IDataObject;
+				} else if (resource === 'customFilter' && operation === 'update') {
+					const customFilterId = this.getNodeParameter('customFilterId', itemIndex) as number;
+					const updateFields = this.getNodeParameter(
+						'customFilterUpdateFields.values',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const body: IDataObject = {};
+					if (updateFields.name !== undefined) {
+						body.name = updateFields.name;
+					}
+					if (updateFields.query !== undefined) {
+						body.query = updateFields.query;
+					}
+					if (updateFields.type !== undefined) {
+						body.type = updateFields.type;
+					}
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/custom_filters/${customFilterId}`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'customFilter' && operation === 'delete') {
+					const customFilterId = this.getNodeParameter('customFilterId', itemIndex) as number;
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/custom_filters/${customFilterId}`,
+					);
+					response = { success: true, id: customFilterId };
 				} else if (resource === 'team' && operation === 'getMany') {
 					response = (await megaApiRequest.call(
 						this,
@@ -4042,6 +5436,349 @@ export class Mega implements INodeType {
 						`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages/${messageId}`,
 					);
 					response = { success: true, id: messageId };
+				} else if (resource === 'scheduledMessage' && operation === 'getMany') {
+					const scope = this.getNodeParameter(
+						'scheduledMessageScope',
+						itemIndex,
+						'account',
+					) as string;
+
+					if (scope === 'conversation') {
+						const conversationId = this.getNodeParameter(
+							'scheduledMessageConversationId',
+							itemIndex,
+						) as number;
+						response = (await megaApiRequest.call(
+							this,
+							'GET',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/scheduled_messages`,
+						)) as IDataObject;
+					} else {
+						response = (await megaApiRequest.call(
+							this,
+							'GET',
+							`/api/v1/accounts/${accountId}/scheduled_messages`,
+						)) as IDataObject;
+					}
+				} else if (resource === 'scheduledMessage' && operation === 'count') {
+					const conversationId = this.getNodeParameter(
+						'scheduledMessageConversationId',
+						itemIndex,
+					) as number;
+					const status = this.getNodeParameter(
+						'scheduledMessageCountStatus',
+						itemIndex,
+						'all',
+					) as string;
+					const qs: IDataObject = {};
+					if (status !== 'all') {
+						qs.status = status;
+					}
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/conversations/${conversationId}/scheduled_messages/count`,
+						undefined,
+						qs,
+					)) as IDataObject;
+				} else if (resource === 'scheduledMessage' && operation === 'get') {
+					const scope = this.getNodeParameter(
+						'scheduledMessageScope',
+						itemIndex,
+						'account',
+					) as string;
+					const scheduledMessageId = this.getNodeParameter(
+						'scheduledMessageId',
+						itemIndex,
+					) as number;
+
+					if (scope === 'conversation') {
+						const conversationId = this.getNodeParameter(
+							'scheduledMessageConversationId',
+							itemIndex,
+						) as number;
+						response = (await megaApiRequest.call(
+							this,
+							'GET',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/scheduled_messages/${scheduledMessageId}`,
+						)) as IDataObject;
+					} else {
+						response = (await megaApiRequest.call(
+							this,
+							'GET',
+							`/api/v1/accounts/${accountId}/scheduled_messages/${scheduledMessageId}`,
+						)) as IDataObject;
+					}
+				} else if (resource === 'scheduledMessage' && operation === 'create') {
+					const scope = this.getNodeParameter(
+						'scheduledMessageScope',
+						itemIndex,
+						'account',
+					) as string;
+					const body: IDataObject = {
+						content: this.getNodeParameter('scheduledMessageContent', itemIndex) as string,
+						scheduled_at: this.getNodeParameter('scheduledMessageScheduledAt', itemIndex) as string,
+					};
+					const inboxId = this.getNodeParameter('scheduledMessageInboxId', itemIndex, 0) as number;
+					const title = this.getNodeParameter('scheduledMessageTitle', itemIndex, '') as string;
+					const templateParams = this.getNodeParameter(
+						'scheduledMessageTemplateParams',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const recurrenceType = this.getNodeParameter(
+						'scheduledMessageRecurrenceType',
+						itemIndex,
+						'none',
+					) as string;
+
+					if (inboxId > 0) {
+						body.inbox_id = inboxId;
+					}
+					if (title.trim()) {
+						body.title = title;
+					}
+					if (Object.keys(templateParams).length > 0) {
+						body.template_params = templateParams;
+					}
+
+					if (recurrenceType !== 'none') {
+						body.recurrence_type = recurrenceType;
+						body.recurrence_interval = this.getNodeParameter(
+							'scheduledMessageRecurrenceInterval',
+							itemIndex,
+							1,
+						) as number;
+						body.recurrence_end_type = this.getNodeParameter(
+							'scheduledMessageRecurrenceEndType',
+							itemIndex,
+							'never',
+						) as string;
+
+						if (recurrenceType === 'weekly') {
+							const recurrenceDays = this.getNodeParameter(
+								'scheduledMessageRecurrenceDays',
+								itemIndex,
+								[],
+							) as number[];
+							if (Array.isArray(recurrenceDays) && recurrenceDays.length > 0) {
+								body.recurrence_days = recurrenceDays;
+							}
+						}
+
+						if (body.recurrence_end_type === 'on_date') {
+							const recurrenceEndDate = this.getNodeParameter(
+								'scheduledMessageRecurrenceEndDate',
+								itemIndex,
+								'',
+							) as string;
+							if (recurrenceEndDate.trim()) {
+								body.recurrence_end_date = recurrenceEndDate;
+							}
+						}
+
+						if (body.recurrence_end_type === 'after_occurrences') {
+							const recurrenceMaxOccurrences = this.getNodeParameter(
+								'scheduledMessageRecurrenceMaxOccurrences',
+								itemIndex,
+								0,
+							) as number;
+							if (recurrenceMaxOccurrences > 0) {
+								body.recurrence_max_occurrences = recurrenceMaxOccurrences;
+							}
+						}
+					}
+
+					if (scope === 'conversation') {
+						const conversationId = this.getNodeParameter(
+							'scheduledMessageConversationId',
+							itemIndex,
+						) as number;
+						response = (await megaApiRequest.call(
+							this,
+							'POST',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/scheduled_messages`,
+							{ scheduled_message: body },
+						)) as IDataObject;
+					} else {
+						const contactId = this.getNodeParameter(
+							'scheduledMessageContactId',
+							itemIndex,
+							0,
+						) as number;
+						const conversationId = this.getNodeParameter(
+							'scheduledMessageCreateConversationId',
+							itemIndex,
+							0,
+						) as number;
+
+						if (contactId > 0) {
+							body.contact_id = contactId;
+						}
+						if (conversationId > 0) {
+							body.conversation_id = conversationId;
+						}
+						if (contactId <= 0 && conversationId <= 0) {
+							throw new NodeOperationError(
+								this.getNode(),
+								'Contact ID or Conversation ID must be provided for account-level scheduled messages',
+								{ itemIndex },
+							);
+						}
+
+						response = (await megaApiRequest.call(
+							this,
+							'POST',
+							`/api/v1/accounts/${accountId}/scheduled_messages`,
+							body,
+						)) as IDataObject;
+					}
+				} else if (resource === 'scheduledMessage' && operation === 'update') {
+					const scope = this.getNodeParameter(
+						'scheduledMessageScope',
+						itemIndex,
+						'account',
+					) as string;
+					const scheduledMessageId = this.getNodeParameter(
+						'scheduledMessageId',
+						itemIndex,
+					) as number;
+					const updateFields = this.getNodeParameter(
+						'scheduledMessageUpdateFields.values',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const body: IDataObject = {};
+
+					if (updateFields.content !== undefined && updateFields.content !== '') {
+						body.content = updateFields.content;
+					}
+					if (
+						typeof updateFields.inboxId === 'number' &&
+						Number.isFinite(updateFields.inboxId) &&
+						updateFields.inboxId > 0
+					) {
+						body.inbox_id = updateFields.inboxId;
+					}
+					if (updateFields.scheduledAt !== undefined && updateFields.scheduledAt !== '') {
+						body.scheduled_at = updateFields.scheduledAt;
+					}
+					if (updateFields.templateParams !== undefined) {
+						body.template_params = updateFields.templateParams;
+					}
+					if (updateFields.title !== undefined && updateFields.title !== '') {
+						body.title = updateFields.title;
+					}
+
+					if (Object.keys(body).length === 0) {
+						throw new NodeOperationError(
+							this.getNode(),
+							'At least one update field must be provided',
+							{ itemIndex },
+						);
+					}
+
+					if (scope === 'conversation') {
+						const conversationId = this.getNodeParameter(
+							'scheduledMessageConversationId',
+							itemIndex,
+						) as number;
+						response = (await megaApiRequest.call(
+							this,
+							'PUT',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/scheduled_messages/${scheduledMessageId}`,
+							{ scheduled_message: body },
+						)) as IDataObject;
+					} else {
+						response = (await megaApiRequest.call(
+							this,
+							'PUT',
+							`/api/v1/accounts/${accountId}/scheduled_messages/${scheduledMessageId}`,
+							body,
+						)) as IDataObject;
+					}
+				} else if (resource === 'scheduledMessage' && operation === 'delete') {
+					const scope = this.getNodeParameter(
+						'scheduledMessageScope',
+						itemIndex,
+						'account',
+					) as string;
+					const scheduledMessageId = this.getNodeParameter(
+						'scheduledMessageId',
+						itemIndex,
+					) as number;
+
+					if (scope === 'conversation') {
+						const conversationId = this.getNodeParameter(
+							'scheduledMessageConversationId',
+							itemIndex,
+						) as number;
+						await megaApiRequest.call(
+							this,
+							'DELETE',
+							`/api/v1/accounts/${accountId}/conversations/${conversationId}/scheduled_messages/${scheduledMessageId}`,
+						);
+					} else {
+						await megaApiRequest.call(
+							this,
+							'DELETE',
+							`/api/v1/accounts/${accountId}/scheduled_messages/${scheduledMessageId}`,
+						);
+					}
+
+					response = { success: true, id: scheduledMessageId };
+				} else if (resource === 'webhook' && operation === 'getMany') {
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/webhooks`,
+					)) as IDataObject;
+				} else if (resource === 'webhook' && operation === 'create') {
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/webhooks`,
+						{
+							name: this.getNodeParameter('webhookName', itemIndex) as string,
+							url: this.getNodeParameter('webhookUrl', itemIndex) as string,
+							subscriptions: this.getNodeParameter(
+								'webhookSubscriptions',
+								itemIndex,
+								[],
+							) as string[],
+						},
+					)) as IDataObject;
+				} else if (resource === 'webhook' && operation === 'update') {
+					const webhookId = this.getNodeParameter('webhookId', itemIndex) as number;
+					const updateFields = this.getNodeParameter(
+						'webhookUpdateFields.values',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const body: IDataObject = {};
+					if (updateFields.name !== undefined) {
+						body.name = updateFields.name;
+					}
+					if (updateFields.subscriptions !== undefined) {
+						body.subscriptions = updateFields.subscriptions;
+					}
+					if (updateFields.url !== undefined) {
+						body.url = updateFields.url;
+					}
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/webhooks/${webhookId}`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'webhook' && operation === 'delete') {
+					const webhookId = this.getNodeParameter('webhookId', itemIndex) as number;
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/webhooks/${webhookId}`,
+					);
+					response = { success: true, id: webhookId };
 				} else if (resource === 'contact' && operation === 'getMany') {
 					const page = this.getNodeParameter('contactPage', itemIndex, 1) as number;
 					const sort = this.getNodeParameter('contactSort', itemIndex, 'name') as string;
@@ -4210,6 +5947,24 @@ export class Mega implements INodeType {
 						`/api/v1/accounts/${accountId}/contacts/${contactId}/contact_inboxes`,
 						body,
 					)) as IDataObject;
+				} else if (resource === 'contact' && operation === 'createNote') {
+					const contactId = this.getNodeParameter('contactRecordId', itemIndex) as number;
+					const content = this.getNodeParameter('contactNoteContent', itemIndex) as string;
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/contacts/${contactId}/notes`,
+						{ content },
+					)) as IDataObject;
+				} else if (resource === 'contact' && operation === 'deleteNote') {
+					const contactId = this.getNodeParameter('contactRecordId', itemIndex) as number;
+					const noteId = this.getNodeParameter('contactNoteId', itemIndex) as number;
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/contacts/${contactId}/notes/${noteId}`,
+					);
+					response = { success: true, id: noteId };
 				} else if (resource === 'contact' && operation === 'getContactableInboxes') {
 					const contactId = this.getNodeParameter('contactRecordId', itemIndex) as number;
 					response = (await megaApiRequest.call(
@@ -4308,6 +6063,225 @@ export class Mega implements INodeType {
 						success: true,
 						id: cannedResponseId,
 					};
+				} else if (resource === 'campaign' && operation === 'create') {
+					const labelEntries = this.getNodeParameter(
+						'campaignAudienceLabels.labels',
+						itemIndex,
+						[],
+					) as Array<{ labelId: number }>;
+					const audience = labelEntries
+						.filter((entry) => Number(entry.labelId) > 0)
+						.map((entry) => ({
+							id: Number(entry.labelId),
+							type: 'Label',
+						}));
+
+					if (audience.length === 0) {
+						throw new NodeOperationError(
+							this.getNode(),
+							'At least one audience label must be provided',
+							{ itemIndex },
+						);
+					}
+
+					const body: IDataObject = {
+						audience,
+						inbox_id: this.getNodeParameter('campaignInboxId', itemIndex) as number,
+						message: this.getNodeParameter('campaignMessage', itemIndex) as string,
+						scheduled_at: this.getNodeParameter('campaignScheduledAt', itemIndex) as string,
+						title: this.getNodeParameter('campaignTitle', itemIndex) as string,
+						trigger_only_during_business_hours: this.getNodeParameter(
+							'campaignTriggerOnlyDuringBusinessHours',
+							itemIndex,
+							false,
+						) as boolean,
+					};
+					const templateParams = this.getNodeParameter(
+						'campaignTemplateParams',
+						itemIndex,
+						{},
+					) as IDataObject;
+
+					if (Object.keys(templateParams).length > 0) {
+						body.template_params = templateParams;
+					}
+
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/campaigns`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'getMany') {
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/chat_rooms`,
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'create') {
+					const body: IDataObject = {
+						chat_room: {
+							name: this.getNodeParameter('chatRoomName', itemIndex) as string,
+						},
+					};
+					const description = this.getNodeParameter('chatRoomDescription', itemIndex, '') as string;
+
+					if (description.trim()) {
+						(body.chat_room as IDataObject).description = description;
+					}
+
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/chat_rooms`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'get') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}`,
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'update') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					const updateFields = this.getNodeParameter(
+						'chatRoomUpdateFields.values',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const chatRoom: IDataObject = {};
+
+					if (updateFields.description !== undefined && updateFields.description !== '') {
+						chatRoom.description = updateFields.description;
+					}
+
+					if (updateFields.name !== undefined && updateFields.name !== '') {
+						chatRoom.name = updateFields.name;
+					}
+
+					if (Object.keys(chatRoom).length === 0) {
+						throw new NodeOperationError(
+							this.getNode(),
+							'At least one update field must be provided',
+							{ itemIndex },
+						);
+					}
+
+					response = (await megaApiRequest.call(
+						this,
+						'PUT',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}`,
+						{ chat_room: chatRoom },
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'delete') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}`,
+					);
+
+					response = {
+						success: true,
+						id: chatRoomId,
+					};
+				} else if (resource === 'chatRoom' && operation === 'markAsRead') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+
+					await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/mark_as_read`,
+					);
+
+					response = {
+						success: true,
+						id: chatRoomId,
+					};
+				} else if (resource === 'chatRoom' && operation === 'getMembers') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/members`,
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'addMembers') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					const userIds = this.getNodeParameter('chatRoomUserIds', itemIndex, []) as number[];
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/members`,
+						{ user_ids: userIds },
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'updateMembers') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					const userIds = this.getNodeParameter('chatRoomUserIds', itemIndex, []) as number[];
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/members`,
+						{ user_ids: userIds },
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'removeMembers') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					const userIds = this.getNodeParameter('chatRoomUserIds', itemIndex, []) as number[];
+
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/members`,
+						{ user_ids: userIds },
+					);
+
+					response = {
+						success: true,
+						id: chatRoomId,
+						user_ids: userIds,
+					};
+				} else if (resource === 'chatRoom' && operation === 'getMessages') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					const page = this.getNodeParameter('chatRoomMessagePage', itemIndex, 1) as number;
+					const perPage = this.getNodeParameter('chatRoomMessagePerPage', itemIndex, 20) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/messages`,
+						undefined,
+						{
+							page,
+							per_page: perPage,
+						},
+					)) as IDataObject;
+				} else if (resource === 'chatRoom' && operation === 'createMessage') {
+					const chatRoomId = this.getNodeParameter('chatRoomId', itemIndex) as number;
+					const chatRoomMessage: IDataObject = {
+						content: this.getNodeParameter('chatRoomMessageContent', itemIndex) as string,
+						message_type: this.getNodeParameter('chatRoomMessageType', itemIndex) as string,
+					};
+					const echoId = this.getNodeParameter('chatRoomMessageEchoId', itemIndex, '') as string;
+					const contentAttributes = this.getNodeParameter(
+						'chatRoomMessageContentAttributes',
+						itemIndex,
+						{},
+					) as IDataObject;
+
+					if (echoId.trim()) {
+						chatRoomMessage.echo_id = echoId;
+					}
+
+					if (Object.keys(contentAttributes).length > 0) {
+						chatRoomMessage.content_attributes = contentAttributes;
+					}
+
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/chat_rooms/${chatRoomId}/messages`,
+						{ chat_room_message: chatRoomMessage },
+					)) as IDataObject;
 				} else if (resource === 'customAttribute' && operation === 'getMany') {
 					response = (await megaApiRequest.call(
 						this,
@@ -4916,6 +6890,13 @@ export class Mega implements INodeType {
 						'GET',
 						`/api/v1/accounts/${accountId}/conversations/${conversationId}/labels`,
 					)) as IDataObject;
+				} else if (resource === 'conversation' && operation === 'getParticipants') {
+					const conversationId = this.getNodeParameter('conversationId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/conversations/${conversationId}/participants`,
+					)) as IDataObject;
 				} else if (resource === 'conversation' && operation === 'setLabels') {
 					const conversationId = this.getNodeParameter('conversationId', itemIndex) as number;
 					const labels = this.getNodeParameter('conversationLabels', itemIndex, []) as string[];
@@ -4924,6 +6905,19 @@ export class Mega implements INodeType {
 						'POST',
 						`/api/v1/accounts/${accountId}/conversations/${conversationId}/labels`,
 						{ labels },
+					)) as IDataObject;
+				} else if (resource === 'conversation' && operation === 'setParticipants') {
+					const conversationId = this.getNodeParameter('conversationId', itemIndex) as number;
+					const userIds = this.getNodeParameter(
+						'conversationParticipantUserIds',
+						itemIndex,
+						[],
+					) as number[];
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/conversations/${conversationId}/participants`,
+						{ user_ids: userIds },
 					)) as IDataObject;
 				} else if (resource === 'conversation' && operation === 'getReportingEvents') {
 					const conversationId = this.getNodeParameter('conversationId', itemIndex) as number;

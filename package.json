@@ -37,10 +37,16 @@
 		"n8nNodesApiVersion": 1,
 		"strict": true,
 		"credentials": [
-			"dist/credentials/MegaApi.credentials.js"
+			"dist/credentials/MegaApi.credentials.js",
+			"dist/credentials/MegaDashboardAppApi.credentials.js",
+			"dist/credentials/MegaClientApi.credentials.js",
+			"dist/credentials/MegaPlatformApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/Mega/Mega.node.js"
+			"dist/nodes/MegaDashboardApp/MegaDashboardApp.node.js",
+			"dist/nodes/Mega/Mega.node.js",
+			"dist/nodes/MegaClient/MegaClient.node.js",
+			"dist/nodes/MegaPlatform/MegaPlatform.node.js"
 		]
 	},
 	"devDependencies": {
