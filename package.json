@@ -1,6 +1,6 @@
 {
 	"name": "@jessefreitas/n8n-nodes-mega",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"description": "Trabalhe com a API do Mega",
 	"license": "MIT",
 	"homepage": "https://github.com/jessefreitas/n8n_community_mega",
