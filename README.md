@@ -1,6 +1,6 @@
 # n8n-nodes-mega
 
-Community node for [n8n](https://n8n.io) that works with Mega through its Chatwoot-compatible account-scoped API.
+Community node for [n8n](https://n8n.io) to work with Mega API.
 
 ## Features
 
@@ -15,9 +15,14 @@ Community node for [n8n](https://n8n.io) that works with Mega through its Chatwo
 - `Contact -> Get Many`, `Create`, `Get`, `Update`, `Delete`, `Get Conversations`, `Search`, `Filter`, `Create Inbox`, `Get Contactable Inboxes`, and `Merge` operations
 - `Conversation -> Get Counts`, `Get Many`, `Create`, `Filter`, `Get`, `Update`, `Toggle Status`, `Toggle Priority`, `Toggle Typing Status`, `Set Custom Attributes`, `Get Labels`, `Set Labels`, `Get Reporting Events`, and `Assign` operations
 - `Custom Attribute -> Get Many`, `Create`, `Get`, `Update`, and `Delete` operations
+- `Inbox -> Get Many`, `Get`, `Create`, `Update`, `Get Agent Bot`, `Set Agent Bot`, `Get Agents`, `Add Agent`, `Remove Agent`, and `Update Agents` operations
+- `Integration -> Get Many`, `Create`, `Update`, and `Delete` operations
+- `Message -> Get Many`, `Create`, and `Delete` operations
 - `Portal -> Get Many`, `Create`, and `Update` operations
 - `Portal Category -> Create` operation
 - `Portal Article -> Create` operation
+- `Profile -> Get` operation
+- `Team -> Get Many`, `Get`, `Create`, `Update`, `Delete`, `Get Agents`, `Add Agent`, `Remove Agent`, and `Update Agents` operations
 - `Mega API` credential with `Base URL`, `API Access Token`, and `Mega Account ID`
 - Credential connection test using `GET /api/v1/profile`
 
@@ -375,6 +380,156 @@ Supported fields:
 - `Regex Pattern`
 - `Regex Cue`
 - `Default Value`
+
+### Inbox
+
+Supported operations:
+
+- `Get Many`
+- `Get`
+- `Create`
+- `Update`
+- `Get Agent Bot`
+- `Set Agent Bot`
+- `Get Agents`
+- `Add Agent`
+- `Remove Agent`
+- `Update Agents`
+
+The node sends requests to:
+
+```text
+GET /api/v1/accounts/{accountId}/inboxes
+GET /api/v1/accounts/{accountId}/inboxes/{id}
+POST /api/v1/accounts/{accountId}/inboxes
+PATCH /api/v1/accounts/{accountId}/inboxes/{id}
+GET /api/v1/accounts/{accountId}/inboxes/{id}/agent_bot
+POST /api/v1/accounts/{accountId}/inboxes/{id}/set_agent_bot
+GET /api/v1/accounts/{accountId}/inbox_members/{inboxId}
+POST /api/v1/accounts/{accountId}/inbox_members
+DELETE /api/v1/accounts/{accountId}/inbox_members
+PATCH /api/v1/accounts/{accountId}/inbox_members
+```
+
+Supported fields:
+
+- `Name`
+- `Channel Type`
+- `Channel Config`
+- `Greeting Enabled`
+- `Greeting Message`
+- `Enable Email Collect`
+- `CSAT Survey Enabled`
+- `Enable Auto Assignment`
+- `Working Hours Enabled`
+- `Out of Office Message`
+- `Timezone`
+- `Allow Messages After Resolved`
+- `Lock to Single Conversation`
+- `Portal ID`
+- `Sender Name Type`
+- `Business Name`
+- `Agent Bot ID`
+- `User IDs`
+
+The documented binary `avatar` upload field is not implemented yet in this node.
+
+### Integration
+
+Supported operations:
+
+- `Get Many`
+- `Create`
+- `Update`
+- `Delete`
+
+The node sends requests to:
+
+```text
+GET /api/v1/accounts/{accountId}/integrations/hooks
+POST /api/v1/accounts/{accountId}/integrations/hooks
+PATCH /api/v1/accounts/{accountId}/integrations/hooks/{hookId}
+DELETE /api/v1/accounts/{accountId}/integrations/hooks/{hookId}
+```
+
+Supported fields:
+
+- `App ID`
+- `Inbox ID`
+- `Status`
+- `Settings`
+
+### Message
+
+Supported operations:
+
+- `Get Many`
+- `Create`
+- `Delete`
+
+The node sends requests to:
+
+```text
+GET /api/v1/accounts/{accountId}/conversations/{conversationId}/messages
+POST /api/v1/accounts/{accountId}/conversations/{conversationId}/messages
+DELETE /api/v1/accounts/{accountId}/conversations/{conversationId}/messages/{messageId}
+```
+
+Supported fields:
+
+- `Conversation ID`
+- `After Message ID`
+- `Before Message ID`
+- `Content`
+- `Message Type`
+- `Private`
+- `Content Type`
+- `Content Attributes`
+- `Campaign ID`
+- `Template Params`
+
+### Profile -> Get
+
+Fetches the authenticated user profile from:
+
+```text
+GET /api/v1/profile
+```
+
+### Team
+
+Supported operations:
+
+- `Get Many`
+- `Get`
+- `Create`
+- `Update`
+- `Delete`
+- `Get Agents`
+- `Add Agent`
+- `Remove Agent`
+- `Update Agents`
+
+The node sends requests to:
+
+```text
+GET /api/v1/accounts/{accountId}/teams
+GET /api/v1/accounts/{accountId}/teams/{teamId}
+POST /api/v1/accounts/{accountId}/teams
+PATCH /api/v1/accounts/{accountId}/teams/{teamId}
+DELETE /api/v1/accounts/{accountId}/teams/{teamId}
+GET /api/v1/accounts/{accountId}/teams/{teamId}/team_members
+POST /api/v1/accounts/{accountId}/teams/{teamId}/team_members
+DELETE /api/v1/accounts/{accountId}/teams/{teamId}/team_members
+PATCH /api/v1/accounts/{accountId}/teams/{teamId}/team_members
+```
+
+Supported fields:
+
+- `Name`
+- `Description`
+- `Allow Auto Assign`
+- `User IDs`
 
 ### Conversation
 

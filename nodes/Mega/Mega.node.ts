@@ -1871,6 +1871,895 @@ const automationRuleUpdateProperties: INodeProperties[] = [
 	},
 ];
 
+const profileUpdateProperties: INodeProperties[] = [];
+
+const integrationHookIdProperty: INodeProperties = {
+	displayName: 'Hook ID',
+	name: 'integrationHookId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the integration hook',
+	displayOptions: {
+		show: {
+			resource: ['integration'],
+			operation: ['delete', 'update'],
+		},
+	},
+};
+
+const integrationStatusOptions: INodePropertyOptions[] = [
+	{ name: 'Active', value: 1 },
+	{ name: 'Inactive', value: 0 },
+];
+
+const integrationCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'App ID',
+		name: 'integrationAppId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		required: true,
+		description: 'ID of the integration app',
+		displayOptions: {
+			show: {
+				resource: ['integration'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Inbox ID',
+		name: 'integrationInboxId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Inbox ID if the hook is inbox-specific',
+		displayOptions: {
+			show: {
+				resource: ['integration'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Status',
+		name: 'integrationStatus',
+		type: 'options',
+		options: integrationStatusOptions,
+		default: 1,
+		description: 'Status of the integration hook',
+		displayOptions: {
+			show: {
+				resource: ['integration'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Settings',
+		name: 'integrationSettings',
+		type: 'json',
+		default: '{}',
+		required: true,
+		description: 'Settings object for the integration hook',
+		displayOptions: {
+			show: {
+				resource: ['integration'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
+const integrationUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'integrationUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the integration hook',
+		displayOptions: {
+			show: {
+				resource: ['integration'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Settings',
+						name: 'settings',
+						type: 'json',
+						default: '{}',
+						description: 'Settings object for the integration hook',
+					},
+					{
+						displayName: 'Status',
+						name: 'status',
+						type: 'options',
+						options: integrationStatusOptions,
+						default: 1,
+						description: 'Status of the integration hook',
+					},
+				],
+			},
+		],
+	},
+];
+
+const teamIdProperty: INodeProperties = {
+	displayName: 'Team ID',
+	name: 'teamId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the team',
+	displayOptions: {
+		show: {
+			resource: ['team'],
+			operation: ['addAgent', 'delete', 'get', 'getAgents', 'removeAgent', 'update', 'updateAgents'],
+		},
+	},
+};
+
+const teamCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Name',
+		name: 'teamName',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Name of the team',
+		displayOptions: {
+			show: {
+				resource: ['team'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Description',
+		name: 'teamDescription',
+		type: 'string',
+		typeOptions: {
+			rows: 3,
+		},
+		default: '',
+		description: 'Description of the team',
+		displayOptions: {
+			show: {
+				resource: ['team'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Allow Auto Assign',
+		name: 'teamAllowAutoAssign',
+		type: 'boolean',
+		default: false,
+		description: 'Whether conversations assigned to the team should be auto-assigned to an agent',
+		displayOptions: {
+			show: {
+				resource: ['team'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
+const teamUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'teamUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the team',
+		displayOptions: {
+			show: {
+				resource: ['team'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Allow Auto Assign',
+						name: 'allowAutoAssign',
+						type: 'boolean',
+						default: false,
+						description: 'Whether conversations assigned to the team should be auto-assigned to an agent',
+					},
+					{
+						displayName: 'Description',
+						name: 'description',
+						type: 'string',
+						typeOptions: {
+							rows: 3,
+						},
+						default: '',
+						description: 'Description of the team',
+					},
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'Name of the team',
+					},
+				],
+			},
+		],
+	},
+];
+
+const teamUserIdsProperty: INodeProperties = {
+	displayName: 'User IDs',
+	name: 'teamUserIds',
+	type: 'json',
+	default: '[]',
+	required: true,
+	description: 'JSON array of user IDs',
+	displayOptions: {
+		show: {
+			resource: ['team'],
+			operation: ['addAgent', 'removeAgent', 'updateAgents'],
+		},
+	},
+};
+
+const inboxRecordIdProperty: INodeProperties = {
+	displayName: 'Inbox ID',
+	name: 'inboxRecordId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the inbox',
+	displayOptions: {
+		show: {
+			resource: ['inbox'],
+			operation: [
+				'addAgent',
+				'get',
+				'getAgentBot',
+				'getAgents',
+				'removeAgent',
+				'setAgentBot',
+				'update',
+				'updateAgents',
+			],
+		},
+	},
+};
+
+const inboxChannelTypeOptions: INodePropertyOptions[] = [
+	{ name: 'API', value: 'api' },
+	{ name: 'Email', value: 'email' },
+	{ name: 'Line', value: 'line' },
+	{ name: 'SMS', value: 'sms' },
+	{ name: 'Telegram', value: 'telegram' },
+	{ name: 'Web Widget', value: 'web_widget' },
+	{ name: 'WhatsApp', value: 'whatsapp' },
+];
+
+const inboxSenderNameTypeOptions: INodePropertyOptions[] = [
+	{ name: 'Friendly', value: 'friendly' },
+	{ name: 'Professional', value: 'professional' },
+];
+
+const inboxCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Name',
+		name: 'inboxName',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Name of the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Channel Type',
+		name: 'inboxChannelType',
+		type: 'options',
+		options: inboxChannelTypeOptions,
+		default: 'web_widget',
+		required: true,
+		description: 'Type of channel for the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Channel Config',
+		name: 'inboxChannelConfig',
+		type: 'json',
+		default: '{}',
+		description: 'Additional channel configuration object',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Greeting Enabled',
+		name: 'inboxGreetingEnabled',
+		type: 'boolean',
+		default: false,
+		description: 'Whether the greeting message is enabled',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Greeting Message',
+		name: 'inboxGreetingMessage',
+		type: 'string',
+		typeOptions: {
+			rows: 3,
+		},
+		default: '',
+		description: 'Greeting message displayed on the widget',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Enable Email Collect',
+		name: 'inboxEnableEmailCollect',
+		type: 'boolean',
+		default: false,
+		description: 'Whether email collection is enabled',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'CSAT Survey Enabled',
+		name: 'inboxCsatSurveyEnabled',
+		type: 'boolean',
+		default: false,
+		description: 'Whether the CSAT survey is enabled',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Enable Auto Assignment',
+		name: 'inboxEnableAutoAssignment',
+		type: 'boolean',
+		default: false,
+		description: 'Whether auto assignment is enabled',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Working Hours Enabled',
+		name: 'inboxWorkingHoursEnabled',
+		type: 'boolean',
+		default: false,
+		description: 'Whether inbox working hours are enabled',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Out of Office Message',
+		name: 'inboxOutOfOfficeMessage',
+		type: 'string',
+		typeOptions: {
+			rows: 3,
+		},
+		default: '',
+		description: 'Out-of-office message displayed on the widget',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Timezone',
+		name: 'inboxTimezone',
+		type: 'string',
+		default: '',
+		description: 'Timezone of the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Allow Messages After Resolved',
+		name: 'inboxAllowMessagesAfterResolved',
+		type: 'boolean',
+		default: false,
+		description: 'Whether messages are allowed after the conversation is resolved',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Lock to Single Conversation',
+		name: 'inboxLockToSingleConversation',
+		type: 'boolean',
+		default: false,
+		description: 'Whether the inbox is locked to a single conversation',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Portal ID',
+		name: 'inboxPortalId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Help center portal ID attached to the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Sender Name Type',
+		name: 'inboxSenderNameType',
+		type: 'options',
+		options: inboxSenderNameTypeOptions,
+		default: 'friendly',
+		description: 'Sender name style for the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Business Name',
+		name: 'inboxBusinessName',
+		type: 'string',
+		default: '',
+		description: 'Business name for the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
+const inboxUpdateProperties: INodeProperties[] = [
+	{
+		displayName: 'Update Fields',
+		name: 'inboxUpdateFields',
+		type: 'fixedCollection',
+		default: {},
+		placeholder: 'Add Field',
+		typeOptions: {
+			multipleValues: false,
+		},
+		description: 'Fields to update on the inbox',
+		displayOptions: {
+			show: {
+				resource: ['inbox'],
+				operation: ['update'],
+			},
+		},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Values',
+				values: [
+					{
+						displayName: 'Allow Messages After Resolved',
+						name: 'allowMessagesAfterResolved',
+						type: 'boolean',
+						default: false,
+						description: 'Whether messages are allowed after the conversation is resolved',
+					},
+					{
+						displayName: 'Business Name',
+						name: 'businessName',
+						type: 'string',
+						default: '',
+						description: 'Business name for the inbox',
+					},
+					{
+						displayName: 'Channel Config',
+						name: 'channelConfig',
+						type: 'json',
+						default: '{}',
+						description: 'Additional channel configuration object',
+					},
+					{
+						displayName: 'CSAT Survey Enabled',
+						name: 'csatSurveyEnabled',
+						type: 'boolean',
+						default: false,
+						description: 'Whether the CSAT survey is enabled',
+					},
+					{
+						displayName: 'Enable Auto Assignment',
+						name: 'enableAutoAssignment',
+						type: 'boolean',
+						default: false,
+						description: 'Whether auto assignment is enabled',
+					},
+					{
+						displayName: 'Enable Email Collect',
+						name: 'enableEmailCollect',
+						type: 'boolean',
+						default: false,
+						description: 'Whether email collection is enabled',
+					},
+					{
+						displayName: 'Greeting Enabled',
+						name: 'greetingEnabled',
+						type: 'boolean',
+						default: false,
+						description: 'Whether the greeting message is enabled',
+					},
+					{
+						displayName: 'Greeting Message',
+						name: 'greetingMessage',
+						type: 'string',
+						typeOptions: {
+							rows: 3,
+						},
+						default: '',
+						description: 'Greeting message displayed on the widget',
+					},
+					{
+						displayName: 'Lock to Single Conversation',
+						name: 'lockToSingleConversation',
+						type: 'boolean',
+						default: false,
+						description: 'Whether the inbox is locked to a single conversation',
+					},
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'Name of the inbox',
+					},
+					{
+						displayName: 'Out of Office Message',
+						name: 'outOfOfficeMessage',
+						type: 'string',
+						typeOptions: {
+							rows: 3,
+						},
+						default: '',
+						description: 'Out-of-office message displayed on the widget',
+					},
+					{
+						displayName: 'Portal ID',
+						name: 'portalId',
+						type: 'number',
+						typeOptions: {
+							numberPrecision: 0,
+						},
+						default: 0,
+						description: 'Help center portal ID attached to the inbox',
+					},
+					{
+						displayName: 'Sender Name Type',
+						name: 'senderNameType',
+						type: 'options',
+						options: inboxSenderNameTypeOptions,
+						default: 'friendly',
+						description: 'Sender name style for the inbox',
+					},
+					{
+						displayName: 'Timezone',
+						name: 'timezone',
+						type: 'string',
+						default: '',
+						description: 'Timezone of the inbox',
+					},
+					{
+						displayName: 'Working Hours Enabled',
+						name: 'workingHoursEnabled',
+						type: 'boolean',
+						default: false,
+						description: 'Whether inbox working hours are enabled',
+					},
+				],
+			},
+		],
+	},
+];
+
+const inboxAgentBotProperty: INodeProperties = {
+	displayName: 'Agent Bot ID',
+	name: 'inboxAgentBotId',
+	type: 'string',
+	default: '',
+	description: 'Agent bot ID. Leave empty to remove the inbox agent bot.',
+	displayOptions: {
+		show: {
+			resource: ['inbox'],
+			operation: ['setAgentBot'],
+		},
+	},
+};
+
+const inboxUserIdsProperty: INodeProperties = {
+	displayName: 'User IDs',
+	name: 'inboxUserIds',
+	type: 'json',
+	default: '[]',
+	required: true,
+	description: 'JSON array of user IDs',
+	displayOptions: {
+		show: {
+			resource: ['inbox'],
+			operation: ['addAgent', 'removeAgent', 'updateAgents'],
+		},
+	},
+};
+
+const messageConversationIdProperty: INodeProperties = {
+	displayName: 'Conversation ID',
+	name: 'messageConversationId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the conversation',
+	displayOptions: {
+		show: {
+			resource: ['message'],
+			operation: ['create', 'delete', 'getMany'],
+		},
+	},
+};
+
+const messageIdProperty: INodeProperties = {
+	displayName: 'Message ID',
+	name: 'messageId',
+	type: 'number',
+	typeOptions: {
+		numberPrecision: 0,
+	},
+	default: 0,
+	required: true,
+	description: 'ID of the message',
+	displayOptions: {
+		show: {
+			resource: ['message'],
+			operation: ['delete'],
+		},
+	},
+};
+
+const messageTypeOptions: INodePropertyOptions[] = [
+	{ name: 'Incoming', value: 'incoming' },
+	{ name: 'Outgoing', value: 'outgoing' },
+];
+
+const messageContentTypeOptions: INodePropertyOptions[] = [
+	{ name: 'Article', value: 'article' },
+	{ name: 'Cards', value: 'cards' },
+	{ name: 'Form', value: 'form' },
+	{ name: 'Input Email', value: 'input_email' },
+	{ name: 'Input Select', value: 'input_select' },
+	{ name: 'Text', value: 'text' },
+];
+
+const messageListProperties: INodeProperties[] = [
+	{
+		displayName: 'After Message ID',
+		name: 'messageAfterId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Fetch messages after this message ID',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['getMany'],
+			},
+		},
+	},
+	{
+		displayName: 'Before Message ID',
+		name: 'messageBeforeId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Fetch messages before this message ID',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['getMany'],
+			},
+		},
+	},
+];
+
+const messageCreateProperties: INodeProperties[] = [
+	{
+		displayName: 'Content',
+		name: 'messageCreateContent',
+		type: 'string',
+		typeOptions: {
+			rows: 4,
+		},
+		default: '',
+		required: true,
+		description: 'Content of the message',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Message Type',
+		name: 'messageCreateType',
+		type: 'options',
+		options: messageTypeOptions,
+		default: 'outgoing',
+		description: 'Type of the message',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Private',
+		name: 'messageCreatePrivate',
+		type: 'boolean',
+		default: false,
+		description: 'Whether the message is a private note',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Content Type',
+		name: 'messageCreateContentType',
+		type: 'options',
+		options: messageContentTypeOptions,
+		default: 'text',
+		description: 'Content type of the message',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Content Attributes',
+		name: 'messageCreateContentAttributes',
+		type: 'json',
+		default: '{}',
+		description: 'Attributes based on the content type',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Campaign ID',
+		name: 'messageCreateCampaignId',
+		type: 'number',
+		typeOptions: {
+			numberPrecision: 0,
+		},
+		default: 0,
+		description: 'Campaign ID to associate with the message',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'Template Params',
+		name: 'messageCreateTemplateParams',
+		type: 'json',
+		default: '{}',
+		description: 'WhatsApp template parameters for structured messages',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['create'],
+			},
+		},
+	},
+];
+
 export class Mega implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Mega',
@@ -1879,7 +2768,7 @@ export class Mega implements INodeType {
 		group: ['input'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Work with Mega through the Chatwoot-compatible API',
+		description: 'Work with Mega API',
 		defaults: {
 			name: 'Mega',
 		},
@@ -1934,6 +2823,26 @@ export class Mega implements INodeType {
 					{
 						name: 'Custom Attribute',
 						value: 'customAttribute',
+					},
+					{
+						name: 'Inbox',
+						value: 'inbox',
+					},
+					{
+						name: 'Integration',
+						value: 'integration',
+					},
+					{
+						name: 'Message',
+						value: 'message',
+					},
+					{
+						name: 'Profile',
+						value: 'profile',
+					},
+					{
+						name: 'Team',
+						value: 'team',
 					},
 				],
 				default: 'conversation',
@@ -2382,6 +3291,238 @@ export class Mega implements INodeType {
 				},
 				default: 'getMany',
 			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Add Agent',
+						value: 'addAgent',
+						description: 'Add agents to the inbox',
+						action: 'Add agents to the inbox',
+					},
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create an inbox',
+						action: 'Create an inbox',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get inbox details',
+						action: 'Get inbox details',
+					},
+					{
+						name: 'Get Agent Bot',
+						value: 'getAgentBot',
+						description: 'Get the inbox agent bot',
+						action: 'Get the inbox agent bot',
+					},
+					{
+						name: 'Get Agents',
+						value: 'getAgents',
+						description: 'List agents in the inbox',
+						action: 'List agents in the inbox',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List all inboxes',
+						action: 'List all inboxes',
+					},
+					{
+						name: 'Remove Agent',
+						value: 'removeAgent',
+						description: 'Remove agents from the inbox',
+						action: 'Remove agents from the inbox',
+					},
+					{
+						name: 'Set Agent Bot',
+						value: 'setAgentBot',
+						description: 'Add or remove an inbox agent bot',
+						action: 'Add or remove an inbox agent bot',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update an inbox',
+						action: 'Update an inbox',
+					},
+					{
+						name: 'Update Agents',
+						value: 'updateAgents',
+						description: 'Overwrite agents in the inbox',
+						action: 'Overwrite agents in the inbox',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['inbox'],
+					},
+				},
+				default: 'getMany',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create an integration hook',
+						action: 'Create an integration hook',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete an integration hook',
+						action: 'Delete an integration hook',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List all integration hooks',
+						action: 'List all integration hooks',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update an integration hook',
+						action: 'Update an integration hook',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['integration'],
+					},
+				},
+				default: 'getMany',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new message',
+						action: 'Create a new message',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a message',
+						action: 'Delete a message',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List messages in a conversation',
+						action: 'List messages in a conversation',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['message'],
+					},
+				},
+				default: 'getMany',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Fetch the authenticated user profile',
+						action: 'Fetch the authenticated user profile',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['profile'],
+					},
+				},
+				default: 'get',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Add Agent',
+						value: 'addAgent',
+						description: 'Add agents to the team',
+						action: 'Add agents to the team',
+					},
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a team',
+						action: 'Create a team',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a team',
+						action: 'Delete a team',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get team details',
+						action: 'Get team details',
+					},
+					{
+						name: 'Get Agents',
+						value: 'getAgents',
+						description: 'List agents in the team',
+						action: 'List agents in the team',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'List all teams',
+						action: 'List all teams',
+					},
+					{
+						name: 'Remove Agent',
+						value: 'removeAgent',
+						description: 'Remove agents from the team',
+						action: 'Remove agents from the team',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a team',
+						action: 'Update a team',
+					},
+					{
+						name: 'Update Agents',
+						value: 'updateAgents',
+						description: 'Overwrite agents in the team',
+						action: 'Overwrite agents in the team',
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['team'],
+					},
+				},
+				default: 'getMany',
+			},
 			...accountUpdateProperties,
 			automationRuleIdProperty,
 			...automationRuleCreateProperties,
@@ -2407,6 +3548,23 @@ export class Mega implements INodeType {
 			customAttributeIdProperty,
 			...customAttributeBaseFields,
 			...customAttributeUpdateProperties,
+			...profileUpdateProperties,
+			integrationHookIdProperty,
+			...integrationCreateProperties,
+			...integrationUpdateProperties,
+			teamIdProperty,
+			...teamCreateProperties,
+			...teamUpdateProperties,
+			teamUserIdsProperty,
+			inboxRecordIdProperty,
+			...inboxCreateProperties,
+			...inboxUpdateProperties,
+			inboxAgentBotProperty,
+			inboxUserIdsProperty,
+			messageConversationIdProperty,
+			messageIdProperty,
+			...messageListProperties,
+			...messageCreateProperties,
 			...auditLogGetManyProperties,
 			conversationIdProperty,
 			...conversationListProperties,
@@ -2515,6 +3673,375 @@ export class Mega implements INodeType {
 						`/api/v1/accounts/${accountId}/automation_rules/${automationRuleId}`,
 					);
 					response = { success: true, id: automationRuleId };
+				} else if (resource === 'profile' && operation === 'get') {
+					response = (await megaApiRequest.call(this, 'GET', '/api/v1/profile')) as IDataObject;
+				} else if (resource === 'integration' && operation === 'getMany') {
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/integrations/hooks`,
+					)) as IDataObject;
+				} else if (resource === 'integration' && operation === 'create') {
+					const body: IDataObject = {
+						app_id: this.getNodeParameter('integrationAppId', itemIndex) as number,
+						settings: this.getNodeParameter('integrationSettings', itemIndex, {}) as IDataObject,
+						status: this.getNodeParameter('integrationStatus', itemIndex, 1) as number,
+					};
+					const inboxId = this.getNodeParameter('integrationInboxId', itemIndex, 0) as number;
+					if (inboxId > 0) {
+						body.inbox_id = inboxId;
+					}
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/integrations/hooks`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'integration' && operation === 'update') {
+					const hookId = this.getNodeParameter('integrationHookId', itemIndex) as number;
+					const updateFields = this.getNodeParameter(
+						'integrationUpdateFields.values',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const body: IDataObject = {};
+					if (updateFields.settings !== undefined) {
+						body.settings = updateFields.settings;
+					}
+					if (updateFields.status !== undefined) {
+						body.status = updateFields.status;
+					}
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/integrations/hooks/${hookId}`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'integration' && operation === 'delete') {
+					const hookId = this.getNodeParameter('integrationHookId', itemIndex) as number;
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/integrations/hooks/${hookId}`,
+					);
+					response = { success: true, id: hookId };
+				} else if (resource === 'team' && operation === 'getMany') {
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/teams`,
+					)) as IDataObject;
+				} else if (resource === 'team' && operation === 'get') {
+					const teamId = this.getNodeParameter('teamId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/teams/${teamId}`,
+					)) as IDataObject;
+				} else if (resource === 'team' && operation === 'create') {
+					const body: IDataObject = {
+						name: this.getNodeParameter('teamName', itemIndex) as string,
+						description: this.getNodeParameter('teamDescription', itemIndex, '') as string,
+						allow_auto_assign: this.getNodeParameter(
+							'teamAllowAutoAssign',
+							itemIndex,
+							false,
+						) as boolean,
+					};
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/teams`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'team' && operation === 'update') {
+					const teamId = this.getNodeParameter('teamId', itemIndex) as number;
+					const updateFields = this.getNodeParameter('teamUpdateFields.values', itemIndex, {}) as IDataObject;
+					const body: IDataObject = {};
+					if (updateFields.allowAutoAssign !== undefined) {
+						body.allow_auto_assign = updateFields.allowAutoAssign;
+					}
+					if (updateFields.description !== undefined) {
+						body.description = updateFields.description;
+					}
+					if (updateFields.name !== undefined) {
+						body.name = updateFields.name;
+					}
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/teams/${teamId}`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'team' && operation === 'delete') {
+					const teamId = this.getNodeParameter('teamId', itemIndex) as number;
+					await megaApiRequest.call(this, 'DELETE', `/api/v1/accounts/${accountId}/teams/${teamId}`);
+					response = { success: true, id: teamId };
+				} else if (resource === 'team' && operation === 'getAgents') {
+					const teamId = this.getNodeParameter('teamId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/teams/${teamId}/team_members`,
+					)) as IDataObject;
+				} else if (
+					resource === 'team' &&
+					['addAgent', 'removeAgent', 'updateAgents'].includes(operation)
+				) {
+					const teamId = this.getNodeParameter('teamId', itemIndex) as number;
+					const userIds = this.getNodeParameter('teamUserIds', itemIndex, []) as number[];
+					const method = operation === 'addAgent' ? 'POST' : operation === 'removeAgent' ? 'DELETE' : 'PATCH';
+					response = (await megaApiRequest.call(
+						this,
+						method,
+						`/api/v1/accounts/${accountId}/teams/${teamId}/team_members`,
+						{ user_ids: userIds },
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'getMany') {
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/inboxes`,
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'get') {
+					const inboxId = this.getNodeParameter('inboxRecordId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/inboxes/${inboxId}`,
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'create') {
+					const body: IDataObject = {
+						name: this.getNodeParameter('inboxName', itemIndex) as string,
+						channel: {
+							type: this.getNodeParameter('inboxChannelType', itemIndex) as string,
+							...(this.getNodeParameter('inboxChannelConfig', itemIndex, {}) as IDataObject),
+						},
+						greeting_enabled: this.getNodeParameter('inboxGreetingEnabled', itemIndex, false) as boolean,
+						enable_email_collect: this.getNodeParameter(
+							'inboxEnableEmailCollect',
+							itemIndex,
+							false,
+						) as boolean,
+						csat_survey_enabled: this.getNodeParameter(
+							'inboxCsatSurveyEnabled',
+							itemIndex,
+							false,
+						) as boolean,
+						enable_auto_assignment: this.getNodeParameter(
+							'inboxEnableAutoAssignment',
+							itemIndex,
+							false,
+						) as boolean,
+						working_hours_enabled: this.getNodeParameter(
+							'inboxWorkingHoursEnabled',
+							itemIndex,
+							false,
+						) as boolean,
+						allow_messages_after_resolved: this.getNodeParameter(
+							'inboxAllowMessagesAfterResolved',
+							itemIndex,
+							false,
+						) as boolean,
+						lock_to_single_conversation: this.getNodeParameter(
+							'inboxLockToSingleConversation',
+							itemIndex,
+							false,
+						) as boolean,
+						sender_name_type: this.getNodeParameter(
+							'inboxSenderNameType',
+							itemIndex,
+							'friendly',
+						) as string,
+					};
+
+					const greetingMessage = this.getNodeParameter('inboxGreetingMessage', itemIndex, '') as string;
+					const outOfOfficeMessage = this.getNodeParameter(
+						'inboxOutOfOfficeMessage',
+						itemIndex,
+						'',
+					) as string;
+					const timezone = this.getNodeParameter('inboxTimezone', itemIndex, '') as string;
+					const businessName = this.getNodeParameter('inboxBusinessName', itemIndex, '') as string;
+					const portalId = this.getNodeParameter('inboxPortalId', itemIndex, 0) as number;
+
+					if (greetingMessage.trim()) body.greeting_message = greetingMessage;
+					if (outOfOfficeMessage.trim()) body.out_of_office_message = outOfOfficeMessage;
+					if (timezone.trim()) body.timezone = timezone;
+					if (businessName.trim()) body.business_name = businessName;
+					if (portalId > 0) body.portal_id = portalId;
+
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/inboxes`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'update') {
+					const inboxId = this.getNodeParameter('inboxRecordId', itemIndex) as number;
+					const updateFields = this.getNodeParameter('inboxUpdateFields.values', itemIndex, {}) as IDataObject;
+					const body: IDataObject = {};
+
+					if (updateFields.allowMessagesAfterResolved !== undefined) {
+						body.allow_messages_after_resolved = updateFields.allowMessagesAfterResolved;
+					}
+					if (updateFields.businessName !== undefined && updateFields.businessName !== '') {
+						body.business_name = updateFields.businessName;
+					}
+					if (updateFields.channelConfig !== undefined) {
+						body.channel = updateFields.channelConfig;
+					}
+					if (updateFields.csatSurveyEnabled !== undefined) {
+						body.csat_survey_enabled = updateFields.csatSurveyEnabled;
+					}
+					if (updateFields.enableAutoAssignment !== undefined) {
+						body.enable_auto_assignment = updateFields.enableAutoAssignment;
+					}
+					if (updateFields.enableEmailCollect !== undefined) {
+						body.enable_email_collect = updateFields.enableEmailCollect;
+					}
+					if (updateFields.greetingEnabled !== undefined) {
+						body.greeting_enabled = updateFields.greetingEnabled;
+					}
+					if (updateFields.greetingMessage !== undefined && updateFields.greetingMessage !== '') {
+						body.greeting_message = updateFields.greetingMessage;
+					}
+					if (updateFields.lockToSingleConversation !== undefined) {
+						body.lock_to_single_conversation = updateFields.lockToSingleConversation;
+					}
+					if (updateFields.name !== undefined) {
+						body.name = updateFields.name;
+					}
+					if (
+						updateFields.outOfOfficeMessage !== undefined &&
+						updateFields.outOfOfficeMessage !== ''
+					) {
+						body.out_of_office_message = updateFields.outOfOfficeMessage;
+					}
+					if (updateFields.portalId !== undefined && Number(updateFields.portalId) > 0) {
+						body.portal_id = Number(updateFields.portalId);
+					}
+					if (updateFields.senderNameType !== undefined) {
+						body.sender_name_type = updateFields.senderNameType;
+					}
+					if (updateFields.timezone !== undefined && updateFields.timezone !== '') {
+						body.timezone = updateFields.timezone;
+					}
+					if (updateFields.workingHoursEnabled !== undefined) {
+						body.working_hours_enabled = updateFields.workingHoursEnabled;
+					}
+
+					response = (await megaApiRequest.call(
+						this,
+						'PATCH',
+						`/api/v1/accounts/${accountId}/inboxes/${inboxId}`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'getAgentBot') {
+					const inboxId = this.getNodeParameter('inboxRecordId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/inboxes/${inboxId}/agent_bot`,
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'setAgentBot') {
+					const inboxId = this.getNodeParameter('inboxRecordId', itemIndex) as number;
+					const agentBotId = this.getNodeParameter('inboxAgentBotId', itemIndex, '') as string;
+					const body: IDataObject = {
+						agent_bot: agentBotId.trim() ? Number(agentBotId) : null,
+					};
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/inboxes/${inboxId}/set_agent_bot`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'inbox' && operation === 'getAgents') {
+					const inboxId = this.getNodeParameter('inboxRecordId', itemIndex) as number;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/inbox_members/${inboxId}`,
+					)) as IDataObject;
+				} else if (
+					resource === 'inbox' &&
+					['addAgent', 'removeAgent', 'updateAgents'].includes(operation)
+				) {
+					const inboxId = this.getNodeParameter('inboxRecordId', itemIndex) as number;
+					const userIds = this.getNodeParameter('inboxUserIds', itemIndex, []) as number[];
+					const method = operation === 'addAgent' ? 'POST' : operation === 'removeAgent' ? 'DELETE' : 'PATCH';
+					response = (await megaApiRequest.call(
+						this,
+						method,
+						`/api/v1/accounts/${accountId}/inbox_members`,
+						{
+							inbox_id: inboxId,
+							user_ids: userIds,
+						},
+					)) as IDataObject;
+				} else if (resource === 'message' && operation === 'getMany') {
+					const conversationId = this.getNodeParameter('messageConversationId', itemIndex) as number;
+					const after = this.getNodeParameter('messageAfterId', itemIndex, 0) as number;
+					const before = this.getNodeParameter('messageBeforeId', itemIndex, 0) as number;
+					const qs: IDataObject = {};
+					if (after > 0) qs.after = after;
+					if (before > 0) qs.before = before;
+					response = (await megaApiRequest.call(
+						this,
+						'GET',
+						`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+						undefined,
+						qs,
+					)) as IDataObject;
+				} else if (resource === 'message' && operation === 'create') {
+					const conversationId = this.getNodeParameter('messageConversationId', itemIndex) as number;
+					const body: IDataObject = {
+						content: this.getNodeParameter('messageCreateContent', itemIndex) as string,
+						message_type: this.getNodeParameter('messageCreateType', itemIndex, 'outgoing') as string,
+						private: this.getNodeParameter('messageCreatePrivate', itemIndex, false) as boolean,
+						content_type: this.getNodeParameter(
+							'messageCreateContentType',
+							itemIndex,
+							'text',
+						) as string,
+					};
+					const contentAttributes = this.getNodeParameter(
+						'messageCreateContentAttributes',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const templateParams = this.getNodeParameter(
+						'messageCreateTemplateParams',
+						itemIndex,
+						{},
+					) as IDataObject;
+					const campaignId = this.getNodeParameter('messageCreateCampaignId', itemIndex, 0) as number;
+
+					if (Object.keys(contentAttributes).length > 0) {
+						body.content_attributes = contentAttributes;
+					}
+					if (Object.keys(templateParams).length > 0) {
+						body.template_params = templateParams;
+					}
+					if (campaignId > 0) {
+						body.campaign_id = campaignId;
+					}
+
+					response = (await megaApiRequest.call(
+						this,
+						'POST',
+						`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`,
+						body,
+					)) as IDataObject;
+				} else if (resource === 'message' && operation === 'delete') {
+					const conversationId = this.getNodeParameter('messageConversationId', itemIndex) as number;
+					const messageId = this.getNodeParameter('messageId', itemIndex) as number;
+					await megaApiRequest.call(
+						this,
+						'DELETE',
+						`/api/v1/accounts/${accountId}/conversations/${conversationId}/messages/${messageId}`,
+					);
+					response = { success: true, id: messageId };
 				} else if (resource === 'contact' && operation === 'getMany') {
 					const page = this.getNodeParameter('contactPage', itemIndex, 1) as number;
 					const sort = this.getNodeParameter('contactSort', itemIndex, 'name') as string;

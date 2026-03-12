@@ -1,0 +1,11 @@
+node_modules
+src
+nodes
+credentials
+icons
+.github
+.vscode
+*.ts
+tsconfig.json
+eslint.config.mjs
+README_TEMPLATE.md
